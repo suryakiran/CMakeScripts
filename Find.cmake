@@ -11,11 +11,11 @@ EndMacro(FIND_CXX_HEADER)
 Macro (FIND_BOOL var)
 	Message (STATUS "Checking for bool")
 	Try_Compile (
-		${var}
+		result
 		${CMAKE_CURRENT_BINARY_DIR}/CMakeTmp/Bool ${CMAKE_MODULES_DIR}/src/TestBool.cxx
 		OUTPUT_VARIABLE OUTPUT
 		)
-	If (${var})
+	If (result)
 		Set (${var} 1 CACHE INTERNAL "Support for C++ type bool")
 		Message (STATUS "Checking for bool -- found")
 	Else ()
