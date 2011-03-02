@@ -1,0 +1,18 @@
+#ifndef DLL_@LIBNAME@_HXX
+#define DLL_@LIBNAME@_HXX
+
+#ifdef WINDOWS
+#define DllExport __declspec (dllexport)
+#define DllImport __declspec (dllimport)
+#else
+#define DllExport
+#define DllImport
+#endif
+
+#ifdef @LibName@_EXPORTS
+#define DLL@LibName@ DllExport
+#else
+#define DLL@LibName@ DllImport
+#endif
+
+#endif
