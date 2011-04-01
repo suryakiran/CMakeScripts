@@ -13,7 +13,7 @@ Macro (FIND_BOOL var)
     Message (STATUS "Checking for bool")
     Try_Compile (
       result
-      ${CMAKE_CURRENT_BINARY_DIR}/CMakeTmp/Bool ${CMAKE_MODULES_DIR}/src/TestBool.cxx
+      ${CMAKE_CURRENT_BINARY_DIR}/CMakeTmp/Bool ${CMAKE_MODULE_PATH}/src/TestBool.cxx
       OUTPUT_VARIABLE OUTPUT
       )
     If (result)
