@@ -16,6 +16,7 @@ class Module:
     self.pkg_config_path = os.environ['PKG_CONFIG_PATH'].split(':')
     self.file = None
     self.export_regex = re.compile('([A-Z][^=:]*):\s*(.*)')
+    self.var_regex = re.compile('([A-Z][^=]*)=\s*(.*)')
 
     multi_arch_host = commands.getoutput('dpkg-architecture -qDEB_HOST_MULTIARCH')
     pkg_multi_arch_path = '/usr/lib/%s/pkgconfig' % multi_arch_host
@@ -80,10 +81,6 @@ class Module:
       if not line:
         continue
 
-      elif '=' in line:
-        name, val = line.split('=')
-        self.variables[name] = self._do_substitution(val)
-
       elif ':' in line:
         m = self.export_regex.match(line)
         if m is not None:
@@ -91,50 +88,10 @@ class Module:
           val = self._do_substitution(m.group(2))
           self.exports[name] = val
 
-
-#class PkgConfig(dict):
-#  _paths = ['/usr/lib/pkgconfig', '/usr/local/lib/pkgconfig']
-#
-#  def __init__(self, package):
-#    self.lokals = {}
-#    self._load(package)
-#
-#  def _load(self, package):
-#    for path in self._paths:
-#      fn = os.path.join(path, '%s.pc' % package)
-#      if os.path.exists(fn):
-#        self._parse(fn)
-#
-#  def _print(self):
-#    for k in self.lokals.keys():
-#      print '%s - %s' % (k, self.lokals[k]);
-#
-#  def _parse(self, filename):
-#    lines = open(filename).readlines()
-#
-#    for line in lines:
-#      line = line.strip()
-#
-#      if not line:
-#        continue
-#      elif ':' in line: # exported variable
-#        name, val = line.split(':')
-#        val = val.strip()
-#        if '$' in val:
-#          try:
-#            val = Template(val).substitute(self.lokals)
-#          except ValueError:
-#            raise ValueError("Error in variable substitution!")
-#        self[name] = val
-#      elif '=' in line: # local variable
-#        name, val = line.split('=')
-#        if '$' in val:
-#          try:
-#            val = Template(val).substitute(self.lokals)
-#          except ValueError:
-#            raise ValueError("Error in variable substitution!")
-#        self.lokals[name] = val
+      elif '=' in line:
+        name, val = line.split('=')
+        self.variables[name] = self._do_substitution(val)
 
 if __name__ == '__main__':
-  m = Module('cairo')
+  m = Module('cairomm-1.0')
   m.dump()
