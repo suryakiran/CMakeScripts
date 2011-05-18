@@ -17,6 +17,7 @@ class Module:
     self.file = None
     self.export_regex = re.compile('([A-Z][^=:]*):\s*(.*)')
     self.var_regex = re.compile('([A-Z][^=]*)=\s*(.*)')
+    self.operators = ['>', '>=', '<>', '<', '<=', '=']
 
     multi_arch_host = commands.getoutput('dpkg-architecture -qDEB_HOST_MULTIARCH')
     pkg_multi_arch_path = '/usr/lib/%s/pkgconfig' % multi_arch_host
@@ -50,6 +51,19 @@ class Module:
           if not r:
             continue
           self.requires.append(r)
+
+      requires_private = []
+      current_module = ''
+      if 'Requires.private' in self.exports:
+        for r in re.split('[, ]', self.exports['Requires.private']):
+          if not r:
+            continue
+          elif r not in self.operators:
+            current_module = r
+          requires_private.append(r)
+
+      for r in requires_private:
+        print r
 
       for r in self.requires:
         m = Module(r)
@@ -93,5 +107,5 @@ class Module:
         self.variables[name] = self._do_substitution(val)
 
 if __name__ == '__main__':
-  m = Module('cairomm-1.0')
+  m = Module('cairo')
   m.dump()
