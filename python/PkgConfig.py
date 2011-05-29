@@ -4,6 +4,24 @@ import os
 import commands
 import re
 from string import Template
+from distutils.version import StrictVersion as Version
+
+class Package:
+  def __init__(self, name):
+    self.name = name
+    self.min_version_reqd = None
+    self.max_version_reqd = None
+    self.parent_package = None
+    self.is_private = False
+
+  def set_min_version_reqd(self, min_ver):
+    self.min_version_reqd = min_ver
+
+  def set_max_version_reqd(self, max_ver):
+    self.max_version_reqd = max_ver
+
+  def set_is_private(self, private):
+    self.is_private = private
 
 class Module:
   def __init__(self, name):
@@ -17,6 +35,10 @@ class Module:
     self.file = None
     self.export_regex = re.compile('([A-Z][^=:]*):\s*(.*)')
     self.var_regex = re.compile('([A-Z][^=]*)=\s*(.*)')
+    self.required_packages = []
+    self.requires_with_version_regex = re.compile(
+                    '([^\s]*)\s*([<>!]=?)\s*((?:\d+\.)?(?:\d+\.)?(?:\d+)?)'
+                    )
     self.operators = ['>', '>=', '<>', '<', '<=', '=']
 
     multi_arch_host = commands.getoutput('dpkg-architecture -qDEB_HOST_MULTIARCH')
@@ -42,32 +64,45 @@ class Module:
         break
 
     if self.file is not None:
-      print 'Paring: %s' % self.file
+      print 'Parsing: %s' % self.file
       self.parse_file()
 
+      requires = {
+          'Requires' : False, 
+          'Requires.private' : True
+          }
 
-      if 'Requires' in self.exports:
-        for r in re.split('[, ]', self.exports['Requires']):
-          if not r:
+      for r in requires.items():
+        req = self.exports.get(r[0])
+
+        if req is None:
+          continue
+
+        for mtch in self.requires_with_version_regex.finditer(req):
+          p = Package(mtch.group(1))
+          p.set_is_private(r[1])
+          op = mtch.group(2)
+          ver = Version(mtch.group(3))
+
+          if op == '<':
+            p.set_max_version_reqd (ver)
+          elif op == '<=':
+            p.set_max_version_reqd (ver)
+          elif op == '>=':
+            p.set_min_version_reqd (ver)
+          elif op == '>':
+            p.set_min_version_reqd (ver)
+
+          self.required_packages.append(p)
+
+        for s in self.requires_with_version_regex.sub('', req).split():
+          if not s:
             continue
-          self.requires.append(r)
+          else:
+            p = Package(s)
+            p.set_is_private(r[1])
 
-      requires_private = []
-      current_module = ''
-      if 'Requires.private' in self.exports:
-        for r in re.split('[, ]', self.exports['Requires.private']):
-          if not r:
-            continue
-          elif r not in self.operators:
-            current_module = r
-          requires_private.append(r)
-
-      for r in requires_private:
-        print r
-
-      for r in self.requires:
-        m = Module(r)
-        m.dump()
+          self.required_packages.append(p)
 
   def dump(self):
     for v in self.exports.keys():
