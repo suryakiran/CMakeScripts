@@ -2,7 +2,7 @@
 
 use warnings;
 use strict;
-use Switch 'Perl6';
+use feature qw/switch/;
 use Getopt::Long;
 
 my ($caseConvType, $delimiter);
