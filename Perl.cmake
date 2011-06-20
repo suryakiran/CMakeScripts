@@ -1,0 +1,13 @@
+Include (FindPerl)
+
+If (PERL_EXECUTABLE) 
+  Execute_Process (
+    COMMAND ${PERL_EXECUTABLE} ${CMAKE_MODULE_PATH}/perl/PerlConfig.pl -o ${CMAKE_BINARY_DIR}/PerlConfig.cmake
+    RESULT_VARIABLE PERL_CONFIG_RESULT_VARIABLE
+    )
+
+  If (NOT ${PERL_CONFIG_RESULT_VARIABLE}) 
+    Include (${CMAKE_BINARY_DIR}/PerlConfig.cmake)
+  EndIf (NOT ${PERL_CONFIG_RESULT_VARIABLE}) 
+
+EndIf (PERL_EXECUTABLE)
