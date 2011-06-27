@@ -2,7 +2,7 @@ Include (FindPerl)
 
 If (PERL_EXECUTABLE) 
   Execute_Process (
-    COMMAND ${PERL_EXECUTABLE} ${CMAKE_MODULE_PATH}/perl/PerlConfig.pl -o ${CMAKE_BINARY_DIR}/PerlConfig.cmake
+    COMMAND ${PERL_EXECUTABLE} ${CMAKE_PERL_DIR}/PerlConfig.pl -o ${CMAKE_BINARY_DIR}/PerlConfig.cmake
     RESULT_VARIABLE PERL_CONFIG_RESULT_VARIABLE
     )
 
@@ -15,7 +15,7 @@ EndIf (PERL_EXECUTABLE)
 Function (CREATE_PPPORT_FILE)
   Execute_Process (
     COMMAND 
-    ${PERL_EXECUTABLE} ${CMAKE_MODULE_PATH}/CreatePPPort.pl 
+    ${PERL_EXECUTABLE} ${CMAKE_PERL_DIR}/CreatePPPort.pl 
     -o ${CMAKE_CURRENT_BINARY_DIR}/ppport.h
     RESULT_VARIABLE PERL_PPPORT_FILE_WRITE_ERROR
     )
@@ -28,7 +28,7 @@ EndFunction (CREATE_PPPORT_FILE)
 Function (CREATE_STL_MAP_FILE)
   Execute_Process (
     COMMAND 
-    ${PERL_EXECUTABLE} ${CMAKE_MODULE_PATH}/CreateStlMap.pl 
+    ${PERL_EXECUTABLE} ${CMAKE_PERL_DIR}/CreateStlMap.pl 
     -o ${CMAKE_CURRENT_BINARY_DIR}/stl.typemap
     RESULT_VARIABLE PERL_STL_MAP_WRITE_ERROR
     )
