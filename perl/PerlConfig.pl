@@ -14,13 +14,17 @@ GetOptions (
 open (FILE, ">$outputFile");
 
 if (-e catfile ($Config{installarchlib}, 'CORE', 'perl.h')) {
+  my $dir = catfile($Config{installarchlib}, 'CORE');
+  $dir =~ tr!\\!/!;
   printf FILE "Set (PERL_INCLUDE_PATH %s CACHE PATH \"Perl Include Path\")\n", 
-    catfile($Config{installarchlib}, 'CORE');
+    $dir;
 }
 
 if (-e catfile ($Config{installarchlib}, 'CORE', $Config{libperl})) {
+  my $file = catfile($Config{installarchlib}, 'CORE', $Config{libperl});
+  $file =~ tr!\\!/!;
   printf FILE "Set (PERL_LIBRARY %s CACHE FILEPATH \"Perl Libraries\")\n", 
-    catfile($Config{installarchlib}, 'CORE', $Config{libperl});
+    $file;
 }
 
 printf FILE "Mark_As_Advanced (PERL_INCLUDE_PATH PERL_LIBRARY)\n";
