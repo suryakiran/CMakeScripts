@@ -40,7 +40,7 @@ process_file (
   except       => 0,
   prototypes   => 1,
   versioncheck => 1,
-  linenumbers  => 1,
+  linenumbers  => 0,
   optimize     => 1,
   prototypes   => 1,
   typemap      => $typemaps
