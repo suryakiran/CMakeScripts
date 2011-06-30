@@ -36,6 +36,9 @@ MACRO (MODULE)
 		"NAME;TYPE" "" ${ARGN}
 		)
 
+  Get_Property (PocoLibraries DIRECTORY PROPERTY PocoLibraries)
+  Get_Property (BoostLibraries DIRECTORY PROPERTY BoostLibraries)
+
 	String (REPLACE "Src" "Include" INC_DIR ${CMAKE_CURRENT_SOURCE_DIR})
 	Set (SRC_FILES)
 
@@ -89,7 +92,7 @@ MACRO (MODULE)
 		Set (LibName ${ModuleTarget_NAME})
 		String (TOUPPER ${LibName} LIBNAME)
 		Set (DllOutFile ${DLL_UTILITIES_DIR}/Dll${ModuleTarget_NAME}.hxx)
-		Configure_File (${DllInFile} ${DllOutFile} @ONLY)
+    Configure_File (${CMAKE_DLL_H_IN_FILE} ${DllOutFile} @ONLY)
 		Add_Library (
 			${ModuleTarget_NAME} ${BUILD_LIB_TYPE}
 			${SRC_FILES} ${DllOutFile}
@@ -110,6 +113,15 @@ MACRO (MODULE)
 				)
 		EndForEach (dep)
 	EndIf (deps)
+
+  ForEach (pl ${PocoLibraries})
+    Target_Link_Libraries (${ModuleTarget_NAME} ${Poco_@pl@_LIBRARY})
+  EndForEach(pl)
+
+  ForEach (bl ${BoostLibraries})
+    String (TOUPPER ${bl} bl)
+    Target_Link_Libraries (${ModuleTarget_NAME} ${Boost_@bl@_LIBRARY})
+  EndForEach(bl)
 
 	If (UseQt)
 		Target_Link_Libraries (${ModuleTarget_NAME}
