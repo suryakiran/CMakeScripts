@@ -9,26 +9,31 @@ MACRO (ADD_RELWITHDEBINFO_CONFIGURATION CONF)
 	EndIf (ridx GREATER -1 AND didx GREATER -1)
 ENDMACRO (ADD_RELWITHDEBINFO_CONFIGURATION)
 
-MACRO (ADD_INSTALL_TARGET)
-	#Parse_Arguments (ARGS
-	#	"NAME;DEPENDS" "" ${ARGN}
-	#	)
+Macro (ADD_INSTALL_TARGETS)
 
-	#If (UNIX)
-	#	Add_Custom_Target (
-	#		${ARGS_NAME}
-	#		DEPENDS ${ARGS_DEPENDS}
-	#		COMMAND cmake -P ${CMAKE_CURRENT_BINARY_DIR}/cmake_install.cmake
-	#		)
-	#Else (UNIX)
-	#	Add_Custom_Target (
-	#		${ARGS_NAME}
-	#		DEPENDS ${ARGS_DEPENDS}
-	#		COMMAND cmake -DBUILD_TYPE=${CMAKE_CFG_INTDIR} -P ${CMAKE_CURRENT_BINARY_DIR}/cmake_install.cmake
-	#		)
-	#EndIf (UNIX)
-	#Set_Target_Properties (${ARGS_NAME} PROPERTIES VS_FOLDER "Install Projects")
-ENDMACRO (ADD_INSTALL_TARGET)
+	ForEach (tgt ${ARGN})
+		Set (install_component install-${tgt})
+
+		If (WIN32)
+			Add_Custom_Target (
+				${install_component}
+				COMMAND ${CMAKE_COMMAND}
+				-D COMPONENT=${install_component}
+				-D BUILD_TYPE=${CMAKE_CFG_INTDIR}
+				-P ${CMAKE_CURRENT_BINARY_DIR}/cmake_install.cmake
+				)
+			Set_Property (TARGET ${install_component} PROPERTY FOLDER "Install Files")
+		Else (WIN32)
+			Add_Custom_Target (
+				${install_component}
+				COMMAND ${CMAKE_COMMAND}
+				-D COMPONENT=${install_component}
+				-P ${CMAKE_CURRENT_BINARY_DIR}/cmake_install.cmake
+				)
+		EndIf (WIN32)
+	EndForEach (tgt)
+
+EndMacro (ADD_INSTALL_TARGETS)
 
 MACRO (INSTALL_LIBRARY_TARGET)
 	Parse_Arguments(InstallTarget
@@ -65,11 +70,6 @@ MACRO (INSTALL_LIBRARY_TARGET)
 		EndForEach (Conf)
 	EndIf("${InstallTarget_CONFIGURATIONS}" STREQUAL "All")
 
-	Add_Install_Target (
-		NAME ${InstallTarget_ALIAS_NAME}
-		DEPENDS ${InstallTarget_NAME}
-		)
-
 ENDMACRO(INSTALL_LIBRARY_TARGET)
 
 MACRO (INSTALL_EXE_TARGET)
@@ -104,10 +104,6 @@ MACRO (INSTALL_EXE_TARGET)
 		EndForEach (Conf)
 	EndIf("${InstallTarget_CONFIGURATIONS}" STREQUAL "All")
 
-	Add_Install_Target (
-		NAME ${InstallTarget_ALIAS_NAME}
-		DEPENDS ${InstallTarget_NAME}
-		)
 ENDMACRO (INSTALL_EXE_TARGET)
 
 MACRO (SHARED_LIBRARY TargetName)
@@ -156,31 +152,6 @@ MACRO (QT_EXE)
 		TYPE "Executable"
 		)
 ENDMACRO (QT_EXE)
-
-#MACRO (LIBRARY)
-#	Parse_Arguments (LibraryTarget
-#		"NAME;SRC_DIR;INSTALL_ALIAS;INSTALL_CONFIGURATIONS" "" ${ARGN}
-#		)
-#
-#	Add_Definitions ("-DDLL_SOURCE")
-#
-#	String (REPLACE "Src" "Include" INC_DIR ${LibraryTarget_SRC_DIR})
-#	File (GLOB SRC_FILES ${LibraryTarget_SRC_DIR}/*.cxx)
-#	File (GLOB HXX_FILES ${INC_DIR}/*.hxx)
-#
-#	Add_Library (
-#		${LibraryTarget_NAME} SHARED
-#		${SRC_FILES} ${HXX_FILES}
-#		)
-#
-#	Set_Target_Properties (${LibraryTarget_NAME} PROPERTIES DEBUG_POSTFIX d)
-#
-#	Install_Library_Target (
-#		NAME ${LibraryTarget_NAME}
-#		ALIAS_NAME ${LibraryTarget_INSTALL_ALIAS}
-#		CONFIGURATIONS ${LibraryTarget_INSTALL_CONFIGURATIONS}
-#		)
-#ENDMACRO (LIBRARY)
 
 MACRO (ADD_MODULE)
 	Parse_Arguments (LibraryTarget
