@@ -37,3 +37,11 @@ Function (CREATE_STL_MAP_FILE)
     Message ("Perl stl map file write error")
   EndIf (PERL_STL_MAP_WRITE_ERROR)
 EndFunction (CREATE_STL_MAP_FILE)
+
+Function (CONFIGURE_EXECUTABLE_FILE p_from p_to)
+  Configure_File (${p_from} ${p_to} $ARGN)
+  Execute_Process (
+    COMMAND
+      ${PERL_EXECUTABLE} -e "chmod 0755, '${p_to}' if -e '${p_to}'"
+      )
+EndFunction (CONFIGURE_EXECUTABLE_FILE)
