@@ -95,7 +95,11 @@ ForEach (module ${POCO_MODULES})
   If (UNIX)
     Set (CMAKE_FIND_LIBRARY_SUFFIXES ${CmakeFindLibrarySuffixes})
   EndIf(UNIX)
+
   Set (LibName Poco_${module}_LIBRARY)
+  Set (lib lib-NOTFOUND)
+  Set (lib_debug lib_debug-NOTFOUND)
+
   Find_Library (lib Poco${module} PATH_SUFFIXES lib PATHS ${POCO_DIR_SEARCH})
   Find_Library (lib_debug Poco${module}d PATH_SUFFIXES lib PATHS ${POCO_DIR_SEARCH})
 
@@ -114,9 +118,6 @@ ForEach (module ${POCO_MODULES})
   ElseIf (lib_debug)
     Set (${LibName} ${lib_debug} CACHE STRING ${LibMessage})
   EndIf (lib AND lib_debug)
-
-  Set (lib lib-NOTFOUND)
-  Set (lib_debug lib_debug-NOTFOUND)
 
   If(UNIX)
     Set (CMAKE_FIND_LIBRARY_SUFFIXES .a)
