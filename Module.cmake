@@ -90,7 +90,6 @@ MACRO (MODULE)
 		EndIf ()
 		Include_Directories (${DLL_UTILITIES_DIR})
 		Set (LibName ${ModuleTarget_NAME})
-		String (TOUPPER ${LibName} LIBNAME)
 		Set (DllOutFile ${DLL_UTILITIES_DIR}/Dll${ModuleTarget_NAME}.hxx)
     Configure_File (${CMAKE_DLL_H_IN_FILE} ${DllOutFile} @ONLY)
 		Add_Library (
