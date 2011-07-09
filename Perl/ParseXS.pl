@@ -4,6 +4,7 @@ use Getopt::Long;
 use File::Spec::Functions qw/rel2abs catfile/;
 use File::Basename;
 use File::Find::Rule;
+use Config;
 
 my (
   $xsFile,
@@ -20,6 +21,7 @@ GetOptions (
   'output|o=s' => \$outFile,
 );
 
+my $reg_typemap = catfile($Config{installprivlib}, 'ExtUtils', 'typemap');
 my $cpp_typemap = rel2abs(catfile(dirname(__FILE__), 'cppobject.map'));
 my $stl_typemap = rel2abs(catfile($binDir, 'stl.typemap'));
 
@@ -31,6 +33,7 @@ foreach (@other_typemaps) {
 
 push @$typemaps, $cpp_typemap if -e $cpp_typemap;
 push @$typemaps, $stl_typemap if -e $stl_typemap;
+push @$typemaps, $reg_typemap if -e $reg_typemap;
 
 process_file (
   filename     => $xsFile,
