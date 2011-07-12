@@ -39,9 +39,54 @@ Function (CREATE_STL_MAP_FILE)
 EndFunction (CREATE_STL_MAP_FILE)
 
 Function (CONFIGURE_EXECUTABLE_FILE p_from p_to)
-  Configure_File (${p_from} ${p_to} $ARGN)
+  Configure_File (${p_from} ${p_to} ${ARGN})
   Execute_Process (
     COMMAND
       ${PERL_EXECUTABLE} -e "chmod 0755, '${p_to}' if -e '${p_to}'"
       )
 EndFunction (CONFIGURE_EXECUTABLE_FILE)
+
+Function (PERL_EXTENSION)
+  Set (target ${ARGV0})
+  Add_Library (${ARGN})
+  String (REPLACE PerlSv "" Dependency ${target})
+  Set_Target_Properties (
+    ${target} PROPERTIES
+    ARCHIVE_OUTPUT_DIRECTORY_DEBUG   ${CMAKE_ARCHIVE_OUTPUT_DIRECTORY_DEBUG}/perl/SV
+    ARCHIVE_OUTPUT_DIRECTORY_RELEASE ${CMAKE_ARCHIVE_OUTPUT_DIRECTORY_RELEASE}/perl/SV
+    RUNTIME_OUTPUT_DIRECTORY_DEBUG   ${CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG}/perl/SV
+    RUNTIME_OUTPUT_DIRECTORY_RELEASE ${CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE}/perl/SV
+    LIBRARY_OUTPUT_DIRECTORY_DEBUG   ${CMAKE_LIBRARY_OUTPUT_DIRECTORY_DEBUG}/perl/SV
+    LIBRARY_OUTPUT_DIRECTORY_RELEASE ${CMAKE_LIBRARY_OUTPUT_DIRECTORY_RELEASE}/perl/SV
+    PREFIX ""
+    OUTPUT_NAME ${Dependency}
+    )
+  Target_Link_Libraries (${target} ${PERL_LIBRARY} ${Dependency})
+EndFunction (PERL_EXTENSION)
+
+Find_File (
+  PL_FILE_PARSE_XS
+    ParseXS.pl
+  PATHS 
+    ${CMAKE_PERL_DIR}
+  )
+
+Find_File (
+  PL_FILE_XS_DEPENDENCIES
+    GetXSDependencies.pl
+  PATHS
+    ${CMAKE_PERL_DIR}
+    )
+
+Find_File (
+  PL_FILE_INSTALL_MODULES
+    InstallPerlModules.pl
+  PATHS
+    ${CMAKE_PERL_DIR}
+    )
+
+Mark_As_Advanced (
+  PL_FILE_PARSE_XS
+  PL_FILE_XS_DEPENDENCIES
+  PL_FILE_INSTALL_MODULES
+  )
