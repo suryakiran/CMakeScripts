@@ -4,6 +4,7 @@ use Config;
 use File::Spec::Functions;
 use File::Basename;
 use Getopt::Long;
+use Sys::Hostname;
 
 my $outputFile;
 
@@ -27,6 +28,8 @@ if (-e catfile ($Config{installarchlib}, 'CORE', $Config{libperl})) {
     $file;
 }
 
-printf FILE "Mark_As_Advanced (PERL_INCLUDE_PATH PERL_LIBRARY)\n";
+printf FILE "Set (MACHINE_NAME %s CACHE STRING \"Machine Name\")\n", hostname;
+
+printf FILE "Mark_As_Advanced (PERL_INCLUDE_PATH PERL_LIBRARY MACHINE_NAME)\n";
 
 close (FILE);

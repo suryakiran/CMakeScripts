@@ -1,0 +1,43 @@
+[%- PROCESS $env_file -%]
+<?xml version="1.0" encoding="Windows-1252"?>
+<VisualStudioUserFile
+	ProjectType="Visual C++"
+	Version="9.00"
+	ShowAllFiles="false"
+	>
+	<Configurations>
+    [% FOREACH conf IN Conf.keys %]
+		<Configuration
+			Name="[% conf %]|Win32"
+			>
+			<DebugSettings
+				Command="[% Conf.$conf.command %]"
+				WorkingDirectory=""
+				CommandArguments="[% Conf.$conf.args %]"
+				Attach="false"
+				DebuggerType="3"
+				Remote="1"
+				RemoteMachine="[%- PERL %]
+        use Sys::Hostname;
+        print hostname;
+        [% END -%]"
+				RemoteCommand=""
+				HttpUrl=""
+				PDBPath=""
+				SQLDebugging=""
+				Environment="[% Conf.$conf.env %]"
+				EnvironmentMerge="true"
+				DebuggerFlavor="0"
+				MPIRunCommand=""
+				MPIRunArguments=""
+				MPIRunWorkingDirectory=""
+				ApplicationCommand=""
+				ApplicationArguments=""
+				ShimCommand=""
+				MPIAcceptMode=""
+				MPIAcceptFilter=""
+			/>
+		</Configuration>
+    [% END %]
+	</Configurations>
+</VisualStudioUserFile>

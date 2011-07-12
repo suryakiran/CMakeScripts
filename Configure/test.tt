@@ -1,0 +1,17 @@
+[% 
+Conf => {
+  debug = {
+    name => 'Debug'
+    trait => 'bad'
+  },
+
+  release = {
+    name => 'Release'
+    trait => 'good'
+  },
+}
+%]
+
+[% FOREACH l IN Conf.keys %]
+My List Number: [% Conf.$l.trait %]
+[% END %]
