@@ -16,7 +16,7 @@ open (FILE, ">$outputFile");
 my $archlib = $Config{installarchlib};
 my $prefix = $Config{installprefix};
 
-$prefix = s,\.,\\\.,g;
+$prefix =~ s,\.,\\\.,g;
 $archlib =~ s/$prefix//g;
 $archlib =~ s,\\,/,g;
 
