@@ -16,18 +16,20 @@ open (FILE, ">$outputFile");
 my $archlib = $Config{installarchlib};
 my $prefix = $Config{installprefix};
 
+$prefix = s,\.,\\\.,g;
 $archlib =~ s/$prefix//g;
+$archlib =~ s,\\,/,g;
 
 if (-e catfile ($Config{installarchlib}, 'CORE', 'perl.h')) {
   my $dir = catfile($Config{installarchlib}, 'CORE');
-  $dir =~ tr!\\!/!;
+  $dir =~ s,\\,/,g;
   printf FILE "Set (PERL_INCLUDE_PATH %s CACHE PATH \"Perl Include Path\")\n", 
     $dir;
 }
 
 if (-e catfile ($Config{installarchlib}, 'CORE', $Config{libperl})) {
   my $file = catfile($Config{installarchlib}, 'CORE', $Config{libperl});
-  $file =~ tr!\\!/!;
+  $file =~ s,\\,/,g;
   printf FILE "Set (PERL_LIBRARY %s CACHE FILEPATH \"Perl Libraries\")\n", 
     $file;
 }
