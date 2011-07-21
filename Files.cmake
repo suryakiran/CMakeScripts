@@ -4,3 +4,10 @@ Find_File (
   PATHS
     ${CMAKE_MODULE_PATH}/Configure
   )
+
+Find_File (
+  CMAKE_PERL_EXENSION_MODULE_FILE
+    PerlExtensionModule.pm.in
+  PATHS
+    ${CMAKE_MODULE_PATH}/Configure
+    )
