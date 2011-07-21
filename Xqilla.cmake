@@ -2,25 +2,15 @@ Set (
   XQILLA_SEARCH_PATHS
   $ENV{XQILLA_DIR}
   $ENV{PACKAGES_DIR}
-  /usr/local
-  /usr
   )
 
-Set (XQILLA_INC_SEARCH_PATHS)
-
-If (XQILLA_EXECUTABLE)
-  Get_Filename_Component (inc_dir ${XQILLA_EXECUTABLE} PATH)
-  Get_Filename_Component (inc_dir ${inc_dir} PATH)
-  List (APPEND XQILLA_INC_SEARCH_PATHS ${inc_dir})
-EndIf (XQILLA_EXECUTABLE)
-
-Set (
-  XQILLA_INC_SEARCH_PATHS
-  $ENV{XQILLA_ROOT}
-  $ENV{PACKAGES_DIR}
-  /usr/local
-  /usr/
-  )
+If (UNIX)
+  List (
+    APPEND XQILLA_SEARCH_PATHS
+    /usr/local
+    /usr
+    )
+EndIf (UNIX)
 
 Find_Program (
   XQILLA_EXECUTABLE
@@ -28,6 +18,17 @@ Find_Program (
   PATHS ${XQILLA_SEARCH_PATHS}
   PATH_SUFFIXES bin
 )
+
+Set (XQILLA_INC_SEARCH_PATHS)
+
+If (XQILLA_EXECUTABLE)
+  Get_Filename_Component (XQILLA_BIN_DIR ${XQILLA_EXECUTABLE} PATH CACHE)
+  Get_Filename_Component (XQILLA_ROOT_DIR ${XQILLA_BIN_DIR} PATH CACHE)
+  List (
+    APPEND XQILLA_INC_SEARCH_PATHS
+    ${XQILLA_ROOT_DIR}
+    )
+EndIf (XQILLA_EXECUTABLE)
 
 Find_File (
   XQILLA_INC_HEADER
@@ -38,7 +39,10 @@ Find_File (
 
 If (XQILLA_INC_HEADER)
   Get_Filename_Component (XQILLA_INCLUDE_DIR ${XQILLA_INC_HEADER} PATH CACHE)
-  Get_Filename_Component (XQILLA_ROOT_DIR ${XQILLA_INCLUDE_DIR} PATH CACHE)
+
+  If (NOT XQILLA_ROOT_DIR)
+    Get_Filename_Component (XQILLA_ROOT_DIR ${XQILLA_INCLUDE_DIR} PATH CACHE)
+  EndIf (NOT XQILLA_ROOT_DIR)
 
   Find_Library (
     XQILLA_OPTIMIZED_LIBRARY

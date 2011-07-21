@@ -228,10 +228,10 @@ MACRO (SET_DIRECTORY_PROPERTY PropName)
   Set (Args ${ARGN})
   If (Args)
     Set_Property (
-      DIRECTORY
+      DIRECTORY APPEND
       PROPERTY ${PropName} ${ARGN}
       )
-  EndIf ()
+  EndIf (Args)
 ENDMACRO (SET_DIRECTORY_PROPERTY)
 
 Macro (WRITE_GVIM_SEARCH_DIRS)

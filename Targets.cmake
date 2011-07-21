@@ -113,6 +113,13 @@ MACRO (SHARED_LIBRARY TargetName)
 		)
 ENDMACRO (SHARED_LIBRARY)
 
+MACRO (STATIC_LIBRARY TargetName)
+	Module (
+		NAME ${TargetName}
+    TYPE "StaticLibrary"
+		)
+ENDMACRO (STATIC_LIBRARY)
+
 MACRO (QT_MODULE)
 	Parse_Arguments (ARGS
 		"NAME;UI_DIR;RC_DIR;TYPE;OTHER_SOURCES" "" ${ARGN}
