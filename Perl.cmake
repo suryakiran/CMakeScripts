@@ -1,18 +1,53 @@
 Include (FindPerl)
 
 If (PERL_EXECUTABLE) 
+  Set (OutFile ${CMAKE_BINARY_DIR}/PerlConfig.cmake)
   Execute_Process (
-    COMMAND ${PERL_EXECUTABLE} ${CMAKE_PERL_DIR}/PerlConfig.pl -o ${CMAKE_BINARY_DIR}/PerlConfig.cmake
+    COMMAND ${PERL_EXECUTABLE} ${CMAKE_PERL_DIR}/PerlConfig.pl -o ${OutFile}
     RESULT_VARIABLE PERL_CONFIG_RESULT_VARIABLE
     OUTPUT_VARIABLE PERL_CONFIG_OUTPUT_VARIABLE
     ERROR_VARIABLE PERL_CONFIG_ERROR_VARIABLE
     )
 
   If (NOT ${PERL_CONFIG_RESULT_VARIABLE}) 
-    Include (${CMAKE_BINARY_DIR}/PerlConfig.cmake)
+    If (EXISTS ${OutFile})
+      Include (${OutFile})
+    EndIf (EXISTS ${OutFile})
   EndIf (NOT ${PERL_CONFIG_RESULT_VARIABLE}) 
 
 EndIf (PERL_EXECUTABLE)
+
+Function (FIND_PERL_C_MODULES)
+  Set (Modules)
+  If (ARGN)
+    ForEach (arg ${ARGN})
+      List (APPEND Modules "-m")
+      List (APPEND Modules ${arg})
+    EndForEach (arg)
+  EndIf (ARGN)
+
+  Set (OutFile ${CMAKE_CURRENT_BINARY_DIR}/PerlCModules.cmake)
+
+  If (Modules)
+
+    Execute_Process (
+      COMMAND ${PERL_EXECUTABLE} ${CMAKE_PERL_DIR}/FindPerlCModules.pl -o ${OutFile} ${Modules}
+      RESULT_VARIABLE FIND_PERL_C_MODULES_RESULT_VARIABLE
+      OUTPUT_VARIABLE FIND_PERL_C_MODULES_OUTPUT_VARIABLE
+      ERROR_VARIABLE FIND_PERL_C_MODULES_ERROR_VARIABLE
+      )
+
+    If (NOT ${FIND_PERL_C_MODULES_RESULT_VARIABLE})
+      If (EXISTS ${OutFile})
+        Include (${OutFile})
+      EndIf (EXISTS ${OutFile})
+    Else (NOT ${FIND_PERL_C_MODULES_RESULT_VARIABLE})
+      Message (${FIND_PERL_C_MODULES_ERROR_VARIABLE})
+    EndIf (NOT ${FIND_PERL_C_MODULES_RESULT_VARIABLE})
+
+  EndIf (Modules)
+
+EndFunction (FIND_PERL_C_MODULES)
 
 Function (CREATE_PPPORT_FILE)
   Execute_Process (
