@@ -26,7 +26,7 @@ Function (FIND_PERL_C_MODULES)
     EndForEach (arg)
   EndIf (ARGN)
 
-  Set (OutFile ${CMAKE_CURRENT_BINARY_DIR}/PerlCModules.cmake)
+  Set (OutFile ${CMAKE_BINARY_DIR}/PerlCModules.cmake)
 
   If (Modules)
 
@@ -82,6 +82,17 @@ Function (CONFIGURE_EXECUTABLE_FILE p_from p_to)
       ${PERL_EXECUTABLE} -e "chmod 0755, '${p_to}' if -e '${p_to}'"
       )
 EndFunction (CONFIGURE_EXECUTABLE_FILE)
+
+Function (PERL_XSI_DEPENDS PerlXsiLib)
+  If (ARGN)
+    Set (PerlCModules)
+    ForEach (arg ${ARGN})
+      String (REPLACE "::" "" arg ${arg})
+      List (APPEND PerlCModules "PerlCModule${arg}")
+    EndForEach (arg)
+    Target_Link_Libraries (${PerlXsiLib} ${PerlCModules})
+  EndIf (ARGN)
+EndFunction (PERL_XSI_DEPENDS)
 
 Function (PERL_EXTENSION)
   Set (target ${ARGV0})

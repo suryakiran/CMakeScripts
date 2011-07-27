@@ -16,12 +16,12 @@
  my $archDir = $Config{installarchlib};
  my $sitePerl = $Config{installsitearch};
  my $dlExt = $Config{dlext};
- my $cmakeName;
- my @cmakeVars;
+ my $libNames;
 
  sub findModuleInDir {
    my ($module, $dir) = @_;
    my @modArray = split(/::/, $module);
+   my $cmakeName;
    ($cmakeName = $module) =~ s,::,_,g;
    $cmakeName =~ tr/a-z/A-Z/;
    $cmakeName = "PERL_C_MODULE_" . $cmakeName;
@@ -38,6 +38,8 @@
    $libName =~ s,\\,/,g;
 
    if (-e $libName) {
+   $libNames->{$module}->{CmakeCacheName} = $cmakeName;
+   $libNames->{$module}->{CmakeLibName} = sprintf("PerlCModule%s", join('', @modArray));
      printf FH <<eof;
 Set(
   $cmakeName
@@ -47,8 +49,6 @@ Set(
   )
 
 eof
-
-     push @cmakeVars, $cmakeName;
      return true;
    }
 
@@ -64,17 +64,31 @@ eof
        findModuleInDir($_, $sitePerl);
      }
    }
- }
 
- if (@cmakeVars)
- {
+#Set_Property (TARGET PerlCModuleIO PROPERTY IMPORTED_LOCATION ${PERL_C_MODULE_IO})
+
    printf FH "Mark_As_Advanced (\n";
-   foreach (@cmakeVars) {
+   foreach (@$modules) {
      printf FH <<eof;
-  $_
+  $libNames->{$_}->{CmakeCacheName}
 eof
    }
-   printf FH ")\n";
+   printf FH ")\n\n";
+
+   foreach (@$modules) {
+     printf FH <<eof;
+Add_Library (
+  $libNames->{$_}->{CmakeLibName}
+  SHARED IMPORTED
+  )
+
+Set_Property (
+  TARGET $libNames->{$_}->{CmakeLibName}
+  PROPERTY IMPORTED_LOCATION \${$libNames->{$_}->{CmakeCacheName}}
+  )
+
+eof
+   }
  }
 
  close (FH);
