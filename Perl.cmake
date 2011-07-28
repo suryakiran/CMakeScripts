@@ -1,52 +1,41 @@
 Include (FindPerl)
 
-If (PERL_EXECUTABLE) 
-  Set (OutFile ${CMAKE_BINARY_DIR}/PerlConfig.cmake)
-  Execute_Process (
-    COMMAND ${PERL_EXECUTABLE} ${CMAKE_PERL_DIR}/PerlConfig.pl -o ${OutFile}
-    RESULT_VARIABLE PERL_CONFIG_RESULT_VARIABLE
-    OUTPUT_VARIABLE PERL_CONFIG_OUTPUT_VARIABLE
-    ERROR_VARIABLE PERL_CONFIG_ERROR_VARIABLE
-    )
+If (NOT PERL_EXECUTABLE)
+  Message (FATAL_ERROR "Unable to find Perl. Please install perl and retry")
+EndIf (NOT PERL_EXECUTABLE)
 
-  If (NOT ${PERL_CONFIG_RESULT_VARIABLE}) 
-    If (EXISTS ${OutFile})
-      Include (${OutFile})
-    EndIf (EXISTS ${OutFile})
-  EndIf (NOT ${PERL_CONFIG_RESULT_VARIABLE}) 
+Set (OutFile ${CMAKE_BINARY_DIR}/PerlConfig.cmake)
+Execute_Process (
+  COMMAND ${PERL_EXECUTABLE} ${CMAKE_PERL_DIR}/PerlConfig.pl -o ${OutFile}
+  RESULT_VARIABLE PERL_CONFIG_RESULT_VARIABLE
+  OUTPUT_VARIABLE PERL_CONFIG_OUTPUT_VARIABLE
+  ERROR_VARIABLE PERL_CONFIG_ERROR_VARIABLE
+  )
 
-EndIf (PERL_EXECUTABLE)
+If (NOT ${PERL_CONFIG_RESULT_VARIABLE}) 
+  If (EXISTS ${OutFile})
+    Include (${OutFile})
+  EndIf (EXISTS ${OutFile})
+EndIf (NOT ${PERL_CONFIG_RESULT_VARIABLE}) 
 
 Function (FIND_PERL_C_MODULES)
-  Set (Modules)
-  If (ARGN)
-    ForEach (arg ${ARGN})
-      List (APPEND Modules "-m")
-      List (APPEND Modules ${arg})
-    EndForEach (arg)
-  EndIf (ARGN)
+  Foreach (arg ${ARGN})
+    Set (cmakeName PERL_C_MODULE_${arg})
+    String (REPLACE "::" "/" arg ${arg})
+    Set (pad ${PERL_ARCH_DIR}/auto/${arg})
+    Set (psad ${PERL_SITE_ARCH_DIR}/auto/${arg})
 
-  Set (OutFile ${CMAKE_BINARY_DIR}/PerlCModules.cmake)
+    String (REPLACE "/" ";" arg ${arg})
+    List (LENGTH arg argLength)
+    Math (EXPR libIndex ${argLength}-1)
+    List (GET arg ${libIndex} libName)
 
-  If (Modules)
-
-    Execute_Process (
-      COMMAND ${PERL_EXECUTABLE} ${CMAKE_PERL_DIR}/FindPerlCModules.pl -o ${OutFile} ${Modules}
-      RESULT_VARIABLE FIND_PERL_C_MODULES_RESULT_VARIABLE
-      OUTPUT_VARIABLE FIND_PERL_C_MODULES_OUTPUT_VARIABLE
-      ERROR_VARIABLE FIND_PERL_C_MODULES_ERROR_VARIABLE
+    Find_Library (
+      ${cmakeName} ${libName}
+      PATHS ${pad} ${psad}
+      PATH_SUFFIXES auto
       )
-
-    If (NOT ${FIND_PERL_C_MODULES_RESULT_VARIABLE})
-      If (EXISTS ${OutFile})
-        Include (${OutFile})
-      EndIf (EXISTS ${OutFile})
-    Else (NOT ${FIND_PERL_C_MODULES_RESULT_VARIABLE})
-      Message (${FIND_PERL_C_MODULES_ERROR_VARIABLE})
-    EndIf (NOT ${FIND_PERL_C_MODULES_RESULT_VARIABLE})
-
-  EndIf (Modules)
-
+  EndForEach (arg ${ARGN})
 EndFunction (FIND_PERL_C_MODULES)
 
 Function (CREATE_PPPORT_FILE)
@@ -90,8 +79,7 @@ Function (PERL_XSI_DEPENDS PerlXsiLib)
   If (ARGN)
     Set (PerlCModules)
     ForEach (arg ${ARGN})
-      String (REPLACE "::" "" arg ${arg})
-      List (APPEND PerlCModules "PerlCModule${arg}")
+      List (APPEND PerlCModules "${PERL_C_MODULE_${arg}}")
     EndForEach (arg)
     Target_Link_Libraries (${PerlXsiLib} ${PerlCModules})
   EndIf (ARGN)
