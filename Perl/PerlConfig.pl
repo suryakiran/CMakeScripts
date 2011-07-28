@@ -13,36 +13,62 @@ GetOptions (
 
 open (FILE, ">$outputFile");
 
-my $archlib = $Config{installarchlib};
+my $archDir = $Config{installarchlib};
+my $siteArchDir = $Config{installsitearch};
 my $prefix = $Config{installprefix};
 
-$prefix =~ s,\.,\\\.,g;
-$archlib =~ s/$prefix//g;
-$archlib =~ s,\\,/,g;
+$archDirSuffix = substr($archDir, length($prefix));
+$archDirSuffix =~ s,\\,/,g;
+$archDir =~ s,\\,/,g;
+$siteArchDir =~ s,\\,/,g;
 
 if (-e catfile ($Config{installarchlib}, 'CORE', 'perl.h')) {
   my $dir = catfile($Config{installarchlib}, 'CORE');
   $dir =~ s,\\,/,g;
-  printf FILE "Set (PERL_INCLUDE_PATH %s CACHE PATH \"Perl Include Path\")\n", 
-    $dir;
+  printf FILE <<eof;
+Set (
+  PERL_INCLUDE_PATH $dir
+  CACHE FILEPATH "Perl Include Path"
+  )
+
+eof
 }
 
 if (-e catfile ($Config{installarchlib}, 'CORE', $Config{libperl})) {
   my $file = catfile($Config{installarchlib}, 'CORE', $Config{libperl});
   $file =~ s,\\,/,g;
-  printf FILE "Set (PERL_LIBRARY %s CACHE FILEPATH \"Perl Libraries\")\n", 
-    $file;
+  printf FILE <<eof;
+Set (
+  PERL_LIBRARY $file
+  CACHE FILEPATH "Perl Libraries"
+  )
+
+eof
 }
 
 printf FILE <<eof;
-Set (PERL_ARCH_LIB_DIR $archlib CACHE STRING "Perl Arch Lib Directory")
+Set (
+  PERL_ARCH_DIR_SUFFIX $archDirSuffix 
+  CACHE STRING "Perl Arch Lib Directory Suffix"
+  )
+
+Set (
+  PERL_ARCH_DIR $archDir 
+  CACHE STRING "Perl Arch Lib Directory"
+  )
+
+Set (
+  PERL_SITE_ARCH_DIR $siteArchDir 
+  CACHE STRING "Perl Site Arch Lib Directory"
+  )
 
 Mark_As_Advanced (
   PERL_INCLUDE_PATH
   PERL_LIBRARY 
-  PERL_ARCH_LIB_DIR
+  PERL_ARCH_DIR
+  PERL_SITE_ARCH_DIR
+  PERL_ARCH_DIR_SUFFIX
 )
 eof
-
 
 close (FILE);
