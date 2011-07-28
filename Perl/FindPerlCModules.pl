@@ -2,6 +2,7 @@
  use File::Spec::Functions;
  use File::Basename;
  use Getopt::Long;
+ use ExtUtils::Mksymlists;
 
  use constant false => 0;
  use constant true => 1;
@@ -45,7 +46,7 @@ Set(
   $cmakeName
   "$libName"
   CACHE FILEPATH
-  "Perl $cmakeName C Module"
+  "Perl $module C Module"
   )
 
 eof

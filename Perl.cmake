@@ -67,12 +67,15 @@ Function (CREATE_STL_MAP_FILE)
     COMMAND 
     ${PERL_EXECUTABLE} ${CMAKE_PERL_DIR}/CreateStlMap.pl 
     -o ${CMAKE_CURRENT_BINARY_DIR}/stl.typemap
-    RESULT_VARIABLE PERL_STL_MAP_WRITE_ERROR
+    ERROR_VARIABLE PERL_STL_MAP_WRITE_ERROR
+    RESULT_VARIABLE PERL_STL_MAP_WRITE_RESULT
+    OUTPUT_VARIABLE PERL_STL_MAP_WRITE_OUTPUT
     )
 
-  If (PERL_STL_MAP_WRITE_ERROR)
-    Message ("Perl stl map file write error")
-  EndIf (PERL_STL_MAP_WRITE_ERROR)
+  If (PERL_STL_MAP_WRITE_RESULT)
+    Message (${PERL_STL_MAP_WRITE_ERROR})
+  EndIf (PERL_STL_MAP_WRITE_RESULT)
+
 EndFunction (CREATE_STL_MAP_FILE)
 
 Function (CONFIGURE_EXECUTABLE_FILE p_from p_to)
@@ -111,6 +114,27 @@ Function (PERL_EXTENSION)
     )
   Target_Link_Libraries (${target} ${PERL_LIBRARY} ${Dependency})
 EndFunction (PERL_EXTENSION)
+
+Function (CHECK_PERL_MODULES)
+  Set (OutFile ${CMAKE_BINARY_DIR}/PerlCheckModules.pl)
+  If (ARGN)
+    FILE (WRITE ${OutFile} "use strict;\nuse warnings;\n\n")
+    ForEach (arg ${ARGN})
+      FILE (APPEND ${OutFile} "use ${arg};\n")
+    EndForEach (arg ${ARGN})
+
+    Execute_Process (
+      COMMAND ${PERL_EXECUTABLE} ${OutFile}
+      RESULT_VARIABLE CHECK_PERL_MODULES_RESULT
+      OUTPUT_VARIABLE CHECK_PERL_MODULES_OUTPUT
+      ERROR_VARIABLE CHECK_PERL_MODULES_ERROR
+      )
+
+    If (CHECK_PERL_MODULES_RESULT)
+      Message (FATAL_ERROR ${CHECK_PERL_MODULES_ERROR})
+    EndIf (CHECK_PERL_MODULES_RESULT)
+  EndIf (ARGN)
+EndFunction (CHECK_PERL_MODULES)
 
 Find_File (
   PL_FILE_PARSE_XS
