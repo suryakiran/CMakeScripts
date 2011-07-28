@@ -19,6 +19,13 @@ If (NOT ${PERL_CONFIG_RESULT_VARIABLE})
 EndIf (NOT ${PERL_CONFIG_RESULT_VARIABLE}) 
 
 Function (FIND_PERL_C_MODULES)
+  Set (oldPfx)
+
+  If (UNIX)
+    Set (oldPfx ${CMAKE_FIND_LIBRARY_PREFIXES})
+    Set (CMAKE_FIND_LIBRARY_PREFIXES "")
+  EndIf (UNIX)
+
   Foreach (arg ${ARGN})
     Set (cmakeName PERL_C_MODULE_${arg})
     String (REPLACE "::" "/" arg ${arg})
@@ -36,6 +43,11 @@ Function (FIND_PERL_C_MODULES)
       PATH_SUFFIXES auto
       )
   EndForEach (arg ${ARGN})
+
+  If (UNIX)
+    Set (CMAKE_FIND_LIBRARY_PREFIXES ${oldPfx})
+  EndIf (UNIX)
+
 EndFunction (FIND_PERL_C_MODULES)
 
 Function (CREATE_PPPORT_FILE)
