@@ -1,47 +1,55 @@
- use Config;
- use File::Spec::Functions;
- use File::Basename;
- use Getopt::Long;
- use ExtUtils::Mksymlists;
+use Config;
+use File::Spec::Functions;
+use File::Basename;
+use Getopt::Long;
+use ExtUtils::Mksymlists;
 
- use constant false => 0;
- use constant true => 1;
+use constant false => 0;
+use constant true => 1;
 
- my ($modules, $siteSearch, $outFile);
+my ($modules, $siteSearch, $outFile);
 
- GetOptions (
-   'module|m=s@' => \$modules,
-   'outfile|o=s' => \$outFile
+GetOptions (
+  'module|m=s@' => \$modules,
+  'outfile|o=s' => \$outFile
  );
 
- my $archDir = $Config{installarchlib};
- my $sitePerl = $Config{installsitearch};
- my $dlExt = $Config{dlext};
- my $libNames;
+my $archDir = $Config{installarchlib};
+my $sitePerl = $Config{installsitearch};
 
- sub findModuleInDir {
-   my ($module, $dir) = @_;
-   my @modArray = split(/::/, $module);
-   my $cmakeName;
-   ($cmakeName = $module) =~ s,::,_,g;
-   $cmakeName =~ tr/a-z/A-Z/;
-   $cmakeName = "PERL_C_MODULE_" . $cmakeName;
-   my $libName = catfile ($dir, 'auto');
-   foreach my $item (@modArray) {
-     $libName = catfile ($libName, $item);
-   }
+my $libExt;
 
-   $libName = catfile (
-     $libName, 
-     sprintf("%s.%s", $modArray[$#modArray], $dlExt
-     ));
+if ($^O =~ /^MSWin32$/) {
+  $libExt = 'lib';
+} else {
+  $libExt = $Config{dlext};
+}
 
-   $libName =~ s,\\,/,g;
+my $libNames;
 
-   if (-e $libName) {
-   $libNames->{$module}->{CmakeCacheName} = $cmakeName;
-   $libNames->{$module}->{CmakeLibName} = sprintf("PerlCModule%s", join('', @modArray));
-     printf FH <<eof;
+sub findModuleInDir {
+  my ($module, $dir) = @_;
+  my @modArray = split(/::/, $module);
+  my $cmakeName;
+  ($cmakeName = $module) =~ s,::,_,g;
+  $cmakeName =~ tr/a-z/A-Z/;
+  $cmakeName = "PERL_C_MODULE_" . $cmakeName;
+  my $libName = catfile ($dir, 'auto');
+  foreach my $item (@modArray) {
+    $libName = catfile ($libName, $item);
+  }
+
+  $libName = catfile (
+    $libName, 
+    sprintf("%s.%s", $modArray[$#modArray], $libExt
+    ));
+
+  $libName =~ s,\\,/,g;
+
+  if (-e $libName) {
+    $libNames->{$module}->{CmakeCacheName} = $cmakeName;
+    $libNames->{$module}->{CmakeLibName} = sprintf("PerlCModule%s", join('', @modArray));
+    printf FH <<eof;
 Set(
   $cmakeName
   "$libName"
@@ -50,34 +58,34 @@ Set(
   )
 
 eof
-     return true;
-   }
+    return true;
+  }
 
-   return false;
- }
+  return false;
+}
 
- if ($modules) {
+if ($modules) {
 
-   open FH, ">$outFile";
+  open FH, ">$outFile";
 
-   foreach (@$modules) {
-     if (!findModuleInDir($_, $archDir)) {
-       findModuleInDir($_, $sitePerl);
-     }
-   }
+  foreach (@$modules) {
+    if (!findModuleInDir($_, $archDir)) {
+      findModuleInDir($_, $sitePerl);
+    }
+  }
 
 #Set_Property (TARGET PerlCModuleIO PROPERTY IMPORTED_LOCATION ${PERL_C_MODULE_IO})
 
-   printf FH "Mark_As_Advanced (\n";
-   foreach (@$modules) {
-     printf FH <<eof;
-  $libNames->{$_}->{CmakeCacheName}
+  printf FH "Mark_As_Advanced (\n";
+  foreach (@$modules) {
+    printf FH <<eof;
+$libNames->{$_}->{CmakeCacheName}
 eof
-   }
-   printf FH ")\n\n";
+  }
+  printf FH ")\n\n";
 
-   foreach (@$modules) {
-     printf FH <<eof;
+  foreach (@$modules) {
+    printf FH <<eof;
 Add_Library (
   $libNames->{$_}->{CmakeLibName}
   SHARED IMPORTED
@@ -89,7 +97,7 @@ Set_Property (
   )
 
 eof
-   }
- }
+  }
+}
 
- close (FH);
+close (FH);

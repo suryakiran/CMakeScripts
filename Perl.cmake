@@ -19,34 +19,38 @@ If (NOT ${PERL_CONFIG_RESULT_VARIABLE})
 EndIf (NOT ${PERL_CONFIG_RESULT_VARIABLE}) 
 
 Function (FIND_PERL_C_MODULES)
-  Set (oldPfx)
+  Set (Modules)
+  If (ARGN)
+    ForEach (arg ${ARGN})
+      List (APPEND Modules "-m")
+      List (APPEND Modules ${arg})
+    EndForEach (arg)
+  EndIf (ARGN)
 
-  If (UNIX)
-    Set (oldPfx ${CMAKE_FIND_LIBRARY_PREFIXES})
-    Set (CMAKE_FIND_LIBRARY_PREFIXES "")
-  EndIf (UNIX)
+  Set (OutFile ${CMAKE_BINARY_DIR}/PerlCModules.cmake)
 
-  Foreach (arg ${ARGN})
-    Set (cmakeName PERL_C_MODULE_${arg})
-    String (REPLACE "::" "/" arg ${arg})
-    Set (pad ${PERL_ARCH_DIR}/auto/${arg})
-    Set (psad ${PERL_SITE_ARCH_DIR}/auto/${arg})
+  If (Modules)
 
-    String (REPLACE "/" ";" arg ${arg})
-    List (LENGTH arg argLength)
-    Math (EXPR libIndex ${argLength}-1)
-    List (GET arg ${libIndex} libName)
-
-    Find_Library (
-      ${cmakeName} ${libName}
-      PATHS ${pad} ${psad}
-      PATH_SUFFIXES auto
+    Execute_Process (
+      COMMAND ${PERL_EXECUTABLE} ${CMAKE_PERL_DIR}/FindPerlCModules.pl -o ${OutFile} ${Modules}
+      RESULT_VARIABLE FIND_PERL_C_MODULES_RESULT_VARIABLE
+      OUTPUT_VARIABLE FIND_PERL_C_MODULES_OUTPUT_VARIABLE
+      ERROR_VARIABLE FIND_PERL_C_MODULES_ERROR_VARIABLE
       )
-  EndForEach (arg ${ARGN})
 
-  If (UNIX)
-    Set (CMAKE_FIND_LIBRARY_PREFIXES ${oldPfx})
-  EndIf (UNIX)
+    If (FIND_PERL_C_MODULES_OUTPUT_VARIABLE)
+      Message (${FIND_PERL_C_MODULES_OUTPUT_VARIABLE})
+    EndIf (FIND_PERL_C_MODULES_OUTPUT_VARIABLE)
+
+    If (NOT ${FIND_PERL_C_MODULES_RESULT_VARIABLE})
+      If (EXISTS ${OutFile})
+        Include (${OutFile})
+      EndIf (EXISTS ${OutFile})
+    Else (NOT ${FIND_PERL_C_MODULES_RESULT_VARIABLE})
+      Message (${FIND_PERL_C_MODULES_ERROR_VARIABLE})
+    EndIf (NOT ${FIND_PERL_C_MODULES_RESULT_VARIABLE})
+
+  EndIf (Modules)
 
 EndFunction (FIND_PERL_C_MODULES)
 
@@ -91,7 +95,8 @@ Function (PERL_XSI_DEPENDS PerlXsiLib)
   If (ARGN)
     Set (PerlCModules)
     ForEach (arg ${ARGN})
-      List (APPEND PerlCModules "${PERL_C_MODULE_${arg}}")
+      String (REPLACE "::" "" arg ${arg})
+      List (APPEND PerlCModules "PerlCModule${arg}")
     EndForEach (arg)
     Target_Link_Libraries (${PerlXsiLib} ${PerlCModules})
   EndIf (ARGN)
