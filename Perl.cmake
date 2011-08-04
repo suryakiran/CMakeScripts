@@ -4,19 +4,40 @@ If (NOT PERL_EXECUTABLE)
   Message (FATAL_ERROR "Unable to find Perl. Please install perl and retry")
 EndIf (NOT PERL_EXECUTABLE)
 
-Set (OutFile ${CMAKE_BINARY_DIR}/PerlConfig.cmake)
-Execute_Process (
-  COMMAND ${PERL_EXECUTABLE} ${CMAKE_PERL_DIR}/PerlConfig.pl -o ${OutFile}
-  RESULT_VARIABLE PERL_CONFIG_RESULT_VARIABLE
-  OUTPUT_VARIABLE PERL_CONFIG_OUTPUT_VARIABLE
-  ERROR_VARIABLE PERL_CONFIG_ERROR_VARIABLE
-  )
+Function (EXECUTE_PERL)
+  PARSE_ARGUMENTS (EXECUTE_PERL
+    "FILE;ARGS;CMAKE_OUTPUT" "" ${ARGN})
+  If (EXECUTE_PERL_FILE)
 
-If (NOT ${PERL_CONFIG_RESULT_VARIABLE}) 
-  If (EXISTS ${OutFile})
-    Include (${OutFile})
-  EndIf (EXISTS ${OutFile})
-EndIf (NOT ${PERL_CONFIG_RESULT_VARIABLE}) 
+    If (EXECUTE_PERL_CMAKE_OUTPUT)
+      List (APPEND EXECUTE_PERL_ARGS "-o")
+      List (APPEND EXECUTE_PERL_ARGS ${EXECUTE_PERL_CMAKE_OUTPUT})
+    EndIf (EXECUTE_PERL_CMAKE_OUTPUT)
+
+    Execute_Process (
+      COMMAND ${PERL_EXECUTABLE} ${EXECUTE_PERL_FILE} ${EXECUTE_PERL_ARGS}
+      RESULT_VARIABLE EXECUTE_PERL_RESULT_VARIABLE
+      OUTPUT_VARIABLE EXECUTE_PERL_OUTPUT_VARIABLE
+      ERROR_VARIABLE  EXECUTE_PERL_ERROR_VARIABLE
+      )
+
+    If (EXECUTE_PERL_OUTPUT_VARIABLE)
+      Message (${EXECUTE_PERL_OUTPUT_VARIABLE})
+    EndIf (EXECUTE_PERL_OUTPUT_VARIABLE)
+
+    If (EXECUTE_PERL_RESULT_VARIABLE)
+      Message (${EXECUTE_PERL_ERROR_VARIABLE})
+    ElseIf (EXECUTE_PERL_CMAKE_OUTPUT)
+      Include (${EXECUTE_PERL_CMAKE_OUTPUT})
+    EndIf (EXECUTE_PERL_RESULT_VARIABLE)
+
+  EndIf (EXECUTE_PERL_FILE)
+EndFunction (EXECUTE_PERL)
+
+Execute_Perl (
+  FILE ${CMAKE_PERL_DIR}/PerlConfig.pl
+  CMAKE_OUTPUT ${CMAKE_BINARY_DIR}/PerlConfig.cmake
+  )
 
 Function (FIND_PERL_C_MODULES)
   Set (Modules)
@@ -30,57 +51,26 @@ Function (FIND_PERL_C_MODULES)
   Set (OutFile ${CMAKE_BINARY_DIR}/PerlCModules.cmake)
 
   If (Modules)
-
-    Execute_Process (
-      COMMAND ${PERL_EXECUTABLE} ${CMAKE_PERL_DIR}/FindPerlCModules.pl -o ${OutFile} ${Modules}
-      RESULT_VARIABLE FIND_PERL_C_MODULES_RESULT_VARIABLE
-      OUTPUT_VARIABLE FIND_PERL_C_MODULES_OUTPUT_VARIABLE
-      ERROR_VARIABLE FIND_PERL_C_MODULES_ERROR_VARIABLE
+    Execute_Perl (
+      FILE ${CMAKE_PERL_DIR}/FindPerlCModules.pl
+      CMAKE_OUTPUT ${OutFile}
+      ARGS ${Modules}
       )
-
-    If (FIND_PERL_C_MODULES_OUTPUT_VARIABLE)
-      Message (${FIND_PERL_C_MODULES_OUTPUT_VARIABLE})
-    EndIf (FIND_PERL_C_MODULES_OUTPUT_VARIABLE)
-
-    If (NOT ${FIND_PERL_C_MODULES_RESULT_VARIABLE})
-      If (EXISTS ${OutFile})
-        Include (${OutFile})
-      EndIf (EXISTS ${OutFile})
-    Else (NOT ${FIND_PERL_C_MODULES_RESULT_VARIABLE})
-      Message (${FIND_PERL_C_MODULES_ERROR_VARIABLE})
-    EndIf (NOT ${FIND_PERL_C_MODULES_RESULT_VARIABLE})
-
   EndIf (Modules)
-
 EndFunction (FIND_PERL_C_MODULES)
 
 Function (CREATE_PPPORT_FILE)
-  Execute_Process (
-    COMMAND 
-    ${PERL_EXECUTABLE} ${CMAKE_PERL_DIR}/CreatePPPort.pl 
-    -o ${CMAKE_CURRENT_BINARY_DIR}/ppport.h
-    RESULT_VARIABLE PERL_PPPORT_FILE_WRITE_ERROR
+  Execute_Perl (
+    FILE ${CMAKE_PERL_DIR}/CreatePPPort.pl
+    ARGS -o ${CMAKE_CURRENT_BINARY_DIR}/ppport.h
     )
-
-  If (PERL_PPPORT_FILE_WRITE_ERROR)
-    Message ("Perl ppport file write error")
-  EndIf (PERL_PPPORT_FILE_WRITE_ERROR)
 EndFunction (CREATE_PPPORT_FILE)
 
 Function (CREATE_STL_MAP_FILE)
-  Execute_Process (
-    COMMAND 
-    ${PERL_EXECUTABLE} ${CMAKE_PERL_DIR}/CreateStlMap.pl 
-    -o ${CMAKE_CURRENT_BINARY_DIR}/stl.typemap
-    ERROR_VARIABLE PERL_STL_MAP_WRITE_ERROR
-    RESULT_VARIABLE PERL_STL_MAP_WRITE_RESULT
-    OUTPUT_VARIABLE PERL_STL_MAP_WRITE_OUTPUT
+  Execute_Perl (
+    FILE ${CMAKE_PERL_DIR}/CreateStlMap.pl
+    ARGS -o ${CMAKE_CURRENT_BINARY_DIR}/stl.typemap
     )
-
-  If (PERL_STL_MAP_WRITE_RESULT)
-    Message (${PERL_STL_MAP_WRITE_ERROR})
-  EndIf (PERL_STL_MAP_WRITE_RESULT)
-
 EndFunction (CREATE_STL_MAP_FILE)
 
 Function (CONFIGURE_EXECUTABLE_FILE p_from p_to)
@@ -135,18 +125,41 @@ Function (CHECK_PERL_MODULES)
       FILE (APPEND ${OutFile} "use ${arg};\n")
     EndForEach (arg ${ARGN})
 
-    Execute_Process (
-      COMMAND ${PERL_EXECUTABLE} ${OutFile}
-      RESULT_VARIABLE CHECK_PERL_MODULES_RESULT
-      OUTPUT_VARIABLE CHECK_PERL_MODULES_OUTPUT
-      ERROR_VARIABLE CHECK_PERL_MODULES_ERROR
-      )
-
-    If (CHECK_PERL_MODULES_RESULT)
-      Message (FATAL_ERROR ${CHECK_PERL_MODULES_ERROR})
-    EndIf (CHECK_PERL_MODULES_RESULT)
+    Execute_Perl (FILE ${OutFile})
   EndIf (ARGN)
 EndFunction (CHECK_PERL_MODULES)
+
+Function (CREATE_PERL_XSI_LIBRARY)
+  Parse_Arguments (
+    PERL_XSI
+    "MODULES;DEPENDENCIES;PERL_C_MODULES" "" ${ARGN}
+    )
+
+  Set (XsiName PerlXsi)
+  Set (Args)
+  ForEach (arg ${PERL_XSI_MODULES} ${PERL_XSI_PERL_C_MODULES})
+    List (APPEND Args "-m")
+    List (APPEND Args "${arg}")
+  EndForEach (arg ${ARGN})
+
+  Set (PerlXsiFile ${CMAKE_CURRENT_BINARY_DIR}/${XsiName}.c)
+  List (APPEND Args "-o")
+  List (APPEND Args ${PerlXsiFile})
+
+  Add_Custom_Command (
+    OUTPUT ${PerlXsiFile}
+    COMMAND ${PERL_EXECUTABLE} ${CMAKE_PERL_DIR}/CreateXsiFile.pl ${Args}
+    )
+
+  Set (LibName ${XsiName})
+  Set (DllOutFile ${DLL_UTILITIES_DIR}/DllPerlXsi.hxx)
+  Configure_File (${CMAKE_DLL_H_IN_FILE} ${DllOutFile} @ONLY)
+  Include_Directories (${DLL_UTILITIES_DIR})
+  Message (${DLL_UTILITIES_DIR})
+  Add_Library (${XsiName} SHARED ${PerlXsiFile} ${DllOutFile})
+  Target_Link_Libraries (${XsiName} ${PERL_XSI_DEPENDENCIES} ${PERL_LIBRARY})
+  Perl_Xsi_Depends (${XsiName} ${PERL_XSI_PERL_C_MODULES})
+EndFunction (CREATE_PERL_XSI_LIBRARY)
 
 Find_File (
   PL_FILE_PARSE_XS
