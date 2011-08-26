@@ -161,29 +161,14 @@ Function (CREATE_PERL_XSI_LIBRARY)
   Perl_Xsi_Depends (${XsiName} ${PERL_XSI_PERL_C_MODULES})
 EndFunction (CREATE_PERL_XSI_LIBRARY)
 
-Find_File (
-  PL_FILE_PARSE_XS
-    ParseXS.pl
-  PATHS 
-    ${CMAKE_PERL_DIR}
-  )
+Function (FIND_PERL_FILE)
+  Find_File_In_Dir (${ARGN} ${CMAKE_PERL_DIR})
+EndFunction (FIND_PERL_FILE)
 
-Find_File (
-  PL_FILE_XS_DEPENDENCIES
-    GetXSDependencies.pl
-  PATHS
-    ${CMAKE_PERL_DIR}
-    )
+Function (CREATE_VCPROJ_USER_FILE)
+EndFunction (CREATE_VCPROJ_USER_FILE)
 
-Find_File (
-  PL_FILE_INSTALL_MODULES
-    InstallPerlModules.pl
-  PATHS
-    ${CMAKE_PERL_DIR}
-    )
-
-Mark_As_Advanced (
-  PL_FILE_PARSE_XS
-  PL_FILE_XS_DEPENDENCIES
-  PL_FILE_INSTALL_MODULES
-  )
+Find_Perl_File(PL_FILE_PARSE_XS ParseXS.pl)
+Find_Perl_File(PL_FILE_XS_DEPENDENCIES GetXSDependencies.pl)
+Find_Perl_File(PL_FILE_INSTALL_MODULES InstallPerlModules.pl)
+Find_Perl_File(PL_FILE_VCPROJ_USER Vcproj.user.pl)

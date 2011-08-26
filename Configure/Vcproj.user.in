@@ -1,0 +1,70 @@
+[% 
+Conf => {
+  Debug = {
+    command => 'Ting Ting'
+    args => 'My Args'
+    mach => 'Remote Machine Name'
+    env => 'Debug Env'
+  },
+
+  Release = {
+    command => 'Ting Ting Rel'
+    args => 'My Args Rel'
+    mach => 'Remote Machine Name Rel'
+    env => 'Rel Env'
+  },
+
+  MinSizeRel = {
+    command => 'Ting Ting MinSizeRel'
+    args => 'My Args MinSizeRel'
+    mach => 'Remote Machine Name MinSizeRel'
+    env => 'MinRel Env'
+  },
+
+  RelWithDebInfo = {
+    command => 'Ting Ting RelWithDebInfo'
+    args => 'My Args RelWithDebInfo'
+    mach => 'Remote Machine Name RelWithDebInfo'
+    env => 'RelDeb Env'
+  }
+}
+%]
+<?xml version="1.0" encoding="Windows-1252"?>
+<VisualStudioUserFile
+	ProjectType="Visual C++"
+	Version="9.00"
+	ShowAllFiles="false"
+	>
+	<Configurations>
+    [% FOREACH conf IN Conf.keys %]
+		<Configuration
+			Name=[% conf %]|Win32
+			>
+			<DebugSettings
+				Command="[% Conf.$conf.command %]"
+				WorkingDirectory=""
+				CommandArguments="[% Conf.$conf.args %]"
+				Attach="false"
+				DebuggerType="3"
+				Remote="1"
+				RemoteMachine="[% Conf.$conf.mach %]"
+				RemoteCommand=""
+				HttpUrl=""
+				PDBPath=""
+				SQLDebugging=""
+				Environment="[% Conf.$conf.env %]"
+				EnvironmentMerge="true"
+				DebuggerFlavor="0"
+				MPIRunCommand=""
+				MPIRunArguments=""
+				MPIRunWorkingDirectory=""
+				ApplicationCommand=""
+				ApplicationArguments=""
+				ShimCommand=""
+				MPIAcceptMode=""
+				MPIAcceptFilter=""
+			/>
+		</Configuration>
+    [% END %]
+	</Configurations>
+</VisualStudioUserFile>
