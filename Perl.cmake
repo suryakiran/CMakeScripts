@@ -39,6 +39,11 @@ Execute_Perl (
   CMAKE_OUTPUT ${CMAKE_BINARY_DIR}/PerlConfig.cmake
   )
 
+Execute_Perl (
+  FILE ${CMAKE_PERL_DIR}/SysInfo.pl
+  CMAKE_OUTPUT ${CMAKE_BINARY_DIR}/SysInfo.cmake
+  )
+
 Function (FIND_PERL_C_MODULES)
   Set (Modules)
   If (ARGN)
@@ -164,7 +169,11 @@ Function (FIND_PERL_FILE)
   Find_File_In_Dir (${ARGN} ${CMAKE_PERL_DIR})
 EndFunction (FIND_PERL_FILE)
 
-Function (CREATE_VCPROJ_USER_FILE)
+Function (CREATE_VCPROJ_USER_FILE p_outFile)
+  Execute_Perl (
+    FILE ${PL_FILE_VCPROJ_USER}
+    ARGS -i ${CMAKE_VCPROJ_USER_IN_FILE} -o ${p_outFile}
+    )
 EndFunction (CREATE_VCPROJ_USER_FILE)
 
 Find_Perl_File(PL_FILE_PARSE_XS ParseXS.pl)
