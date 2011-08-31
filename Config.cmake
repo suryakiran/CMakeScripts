@@ -19,3 +19,10 @@ Find_Cmake_Configure_File (CMAKE_DLL_H_IN_FILE Dll.h.in)
 Find_Cmake_Configure_File (CMAKE_PERL_EXTENSION_MODULE_FILE PerlExtensionModule.pm.in)
 Find_Cmake_Configure_File (CMAKE_VCPROJ_USER_IN_FILE Vcproj.user.in)
 Find_Cmake_Configure_File (CMAKE_GVIM_INIT_FILE gviminit.vim.in)
+
+OPTION (USE_BOOST "Use Boost Libraries" TRUE)
+OPTION (USE_POCO "Use Poco Libraries" TRUE)
+OPTION (USE_QT "Use Qt Libraries" TRUE)
+
+Include (${CMAKE_MODULE_PATH}/Definitions.cmake)
+Include (${CMAKE_MODULE_PATH}/BuildDirectories.cmake)
