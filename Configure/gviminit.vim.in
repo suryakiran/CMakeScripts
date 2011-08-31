@@ -1,0 +1,29 @@
+set path=.
+@ADDITIONAL_GVIM_PATHS@
+
+chdir @CMAKE_SOURCE_DIR@
+
+function! OpenAlternateFile()
+  python << end_of_python
+import os, sys, vim, re
+curFile = vim.current.buffer.name
+s_re = re.compile ('@CMAKE_SOURCE_DIR@/Src/([^\.]*)\.cxx$')
+i_re = re.compile ('@CMAKE_SOURCE_DIR@/Include/([^\.]*)\.hxx$')
+altFile = None
+
+if s_re.match(curFile):
+  altFile = s_re.sub('@CMAKE_SOURCE_DIR@/Include/\\1.hxx', curFile)
+elif i_re.match(curFile):
+  altFile = i_re.sub('@CMAKE_SOURCE_DIR@/Src/\\1.cxx', curFile)
+
+if altFile is not None:
+  vim.command('call OpenFile("%s")' % altFile)
+end_of_python
+endfunction
+
+nmap <silent> <C-A> :call OpenAlternateFile()<CR>
+nmap <silent> ,i :call OpenFile('@CMAKE_GVIM_INIT_FILE_OUT@')<CR>
+nmap <silent> ,g :call OpenFile('@CMAKE_GVIM_INIT_FILE@')<CR>
+nmap <silent> ,m :call OpenFile('@CMAKE_PARENT_LIST_FILE@')<CR>
+nmap [b :e @CMAKE_BINARY_DIR@/
+"nmap <silent> ,a :call OpenAlternateConfigFile()<CR>
