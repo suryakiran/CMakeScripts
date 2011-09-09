@@ -1,0 +1,49 @@
+set path=.
+
+[%- IF os != 'Win32' -%]
+set path+=/usr/include
+[%- END %]
+
+[%- FOREACH item IN GVIM_SEARCH_DIRS %]
+set path+=[% item %]
+[%- END %]
+
+chdir $CMAKE_SOURCE_DIR
+
+function! OpenAlternateFile()
+  python << end_of_python
+import os, sys, vim, re
+curFile = vim.current.buffer.name
+altFile = None
+[% FOREACH item IN PROJECT_MODULES %]
+if altFile is None:
+  [% item %]_src_re = re.compile('$CMAKE_SOURCE_DIR/[% item %]/Src/([^\.]*)\.cxx$')
+  [% item %]_inc_re = re.compile('$CMAKE_SOURCE_DIR/[% item %]/Include/[% item %]/([^\.]*)\.hxx$')
+  
+  if ([% item %]_src_re.match(curFile)):
+    altFile = [% item %]_src_re.sub('$CMAKE_SOURCE_DIR/[% item %]/Include/[% item %]/\\1.hxx', curFile)
+  elif ([% item %]_inc_re.match(curFile)):
+    altFile = [% item %]_inc_re.sub('$CMAKE_SOURCE_DIR/[% item %]/Src/\\1.cxx', curFile)
+[% END %]
+if altFile is None:
+  s_re = re.compile ('$CMAKE_SOURCE_DIR/Src/([^\.]*)\.cxx$')
+  i_re = re.compile ('$CMAKE_SOURCE_DIR/Include/([^\.]*)\.hxx$')
+
+  if s_re.match(curFile):
+    altFile = s_re.sub('$CMAKE_SOURCE_DIR/Include/\\1.hxx', curFile)
+  elif i_re.match(curFile):
+    altFile = i_re.sub('$CMAKE_SOURCE_DIR/Src/\\1.cxx', curFile)
+
+if altFile is not None:
+  vim.command('call OpenFile("%s")' % altFile)
+
+end_of_python
+endfunction "OpenAlternateFile()
+
+nmap <silent> <C-A> :call OpenAlternateFile()<CR>
+nmap <silent> ,i :call OpenFile('$CMAKE_GVIM_INIT_FILE_OUT')<CR>
+nmap <silent> ,g :call OpenFile('$PROJECT_GVIM_INIT_FILE')<CR>
+nmap <silent> ,a :call OpenAlternateConfigFile()<CR>
+nmap <silent> ,m :call OpenFile('$CMAKE_PARENT_LIST_FILE')<CR>
+nmap [b :e $CMAKE_BINARY_DIR/
+nmap [s :e $CMAKE_SOURCE_DIR/
