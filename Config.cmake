@@ -2,7 +2,6 @@ If (${CMAKE_SOURCE_DIR} STREQUAL ${CMAKE_BINARY_DIR})
   Message (FATAL_ERROR "In source builds are not supported. Bailing out now")
 EndIf (${CMAKE_SOURCE_DIR} STREQUAL ${CMAKE_BINARY_DIR})
 
-Cmake_Minimum_Required (VERSION 2.8.4)
 Get_Filename_Component (CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/CMake ABSOLUTE CACHE)
 Get_Filename_Component (CMAKE_PERL_DIR ${CMAKE_MODULE_PATH}/Perl ABSOLUTE CACHE)
 Get_Filename_Component (CMAKE_PYTHON_DIR ${CMAKE_MODULE_PATH}/Python ABSOLUTE CACHE)
