@@ -31,7 +31,7 @@ $cmakeVars = XMLin(
 $cmakeVars->{os} = $^O;
 
 if ($gvimSearchDirs) {
-$cmakeVars->{GVIM_SEARCH_DIRS}=$gvimSearchDirs;
+  $cmakeVars->{GVIM_SEARCH_DIRS}=$gvimSearchDirs;
 }
 
 if ($projectModules) {
