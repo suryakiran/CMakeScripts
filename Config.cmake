@@ -23,10 +23,10 @@ EndMacro (FIND_CMAKE_CONFIGURE_FILE)
 Find_Cmake_Configure_File (CMAKE_DLL_H_IN_FILE Dll.h.in)
 Find_Cmake_Configure_File (CMAKE_PERL_EXTENSION_MODULE_FILE PerlExtensionModule.pm.in)
 Find_Cmake_Configure_File (CMAKE_VCPROJ_USER_IN_FILE Vcproj.user.in)
-Find_Cmake_Configure_File (CMAKE_GVIM_INIT_FILE gviminit.vim.in)
 Find_Cmake_Configure_File (CMAKE_VARIABLES_XML_IN_FILE CmakeVariables.xml.in)
 Find_Cmake_Configure_File (CMAKE_GVIM_INIT_TMPL_FILE gviminit.vim.tmpl)
-Find_File_In_Dir (PROJECT_GVIM_INIT_FILE gviminit.vim.in ${PROJECT_CONFIG_DIR})
+
+Find_File_In_Dir (CMAKE_CONFIG_FILE Config.cmake ${CMAKE_MODULE_PATH})
 
 OPTION (USE_BOOST "Use Boost Libraries" TRUE)
 OPTION (USE_POCO "Use Poco Libraries" TRUE)

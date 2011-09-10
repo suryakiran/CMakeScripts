@@ -41,9 +41,13 @@ end_of_python
 endfunction "OpenAlternateFile()
 
 nmap <silent> <C-A> :call OpenAlternateFile()<CR>
-nmap <silent> ,i :call OpenFile('$CMAKE_GVIM_INIT_FILE_OUT')<CR>
-nmap <silent> ,g :call OpenFile('$PROJECT_GVIM_INIT_FILE')<CR>
 nmap <silent> ,a :call OpenAlternateConfigFile()<CR>
 nmap <silent> ,m :call OpenFile('$CMAKE_PARENT_LIST_FILE')<CR>
+nmap <silent> ]c :call OpenFile('$CMAKE_CONFIG_FILE')<CR>
+nmap <silent> ]v :call OpenFile('$CMAKE_VARIABLES_XML_IN_FILE')<CR>
+nmap <silent> [v :call OpenFile('$CMAKE_VARIABLES_XML_OUT_FILE')<CR>
+nmap <silent> [i :call OpenFile('$CMAKE_GVIM_INIT_FILE_OUT')<CR>
+nmap <silent> ]i :call OpenFile('$CMAKE_GVIM_INIT_TMPL_FILE')<CR>
+nmap <silent> ]p :call OpenFile('$PROJECT_LIST_FILE')<CR>
 nmap [b :e $CMAKE_BINARY_DIR/
 nmap [s :e $CMAKE_SOURCE_DIR/
