@@ -32,6 +32,7 @@ OPTION (USE_BOOST "Use Boost Libraries" TRUE)
 OPTION (USE_POCO "Use Poco Libraries" TRUE)
 OPTION (USE_QT "Use Qt Libraries" TRUE)
 
+Include (${CMAKE_MODULE_PATH}/Git.cmake)
 Include (${CMAKE_MODULE_PATH}/Definitions.cmake)
 Include (${CMAKE_MODULE_PATH}/BuildDirectories.cmake)
 
