@@ -1,11 +1,11 @@
 set path=.
 
-[%- IF os != 'Win32' -%]
-set path+=/usr/include
-[%- END %]
-
 [%- FOREACH item IN GVIM_SEARCH_DIRS %]
 set path+=[% item %]
+[%- END %]
+
+[% IF os != 'Win32' -%]
+set path+=/usr/include
 [%- END %]
 
 chdir $CMAKE_SOURCE_DIR
