@@ -8,6 +8,10 @@ Get_Filename_Component (CMAKE_PYTHON_DIR ${CMAKE_MODULE_PATH}/Python ABSOLUTE CA
 Get_Filename_Component (CMAKE_CONFIG_DIR ${CMAKE_MODULE_PATH}/Configure ABSOLUTE CACHE)
 Get_Filename_Component (PROJECT_CONFIG_DIR ${CMAKE_SOURCE_DIR}/Config ABSOLUTE CACHE)
 
+Macro (INCLUDE_CMAKE_MODULE p_moduleName)
+  Include (${CMAKE_MODULE_PATH}/${p_moduleName}.cmake)
+EndMacro (INCLUDE_CMAKE_MODULE)
+
 Set (CMAKE_GVIM_INIT_FILE_OUT ${CMAKE_BINARY_DIR}/gviminit.vim)
 Set (CMAKE_VARIABLES_XML_OUT_FILE ${CMAKE_BINARY_DIR}/CMakeVariables.xml)
 
@@ -15,7 +19,11 @@ If (WIN32)
   Add_Definitions ("-DWINDOWS")
 EndIf (WIN32)
 
-Include (${CMAKE_MODULE_PATH}/Macros.cmake)
+Include_Cmake_Module(Macros)
+
+Include_Cmake_Module(Compiler)
+Include_Cmake_Module(C++-11)
+
 Macro (FIND_CMAKE_CONFIGURE_FILE)
   Find_File_In_Dir (${ARGN} ${CMAKE_CONFIG_DIR})
 EndMacro (FIND_CMAKE_CONFIGURE_FILE)
@@ -32,8 +40,8 @@ OPTION (USE_BOOST "Use Boost Libraries" TRUE)
 OPTION (USE_POCO "Use Poco Libraries" TRUE)
 OPTION (USE_QT "Use Qt Libraries" TRUE)
 
-Include (${CMAKE_MODULE_PATH}/Git.cmake)
-Include (${CMAKE_MODULE_PATH}/Definitions.cmake)
-Include (${CMAKE_MODULE_PATH}/BuildDirectories.cmake)
+Include_Cmake_Module(Git)
+Include_Cmake_Module(Definitions)
+Include_Cmake_Module(BuildDirectories)
 
 Configure_File (${CMAKE_VARIABLES_XML_IN_FILE} ${CMAKE_VARIABLES_XML_OUT_FILE})
