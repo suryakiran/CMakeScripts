@@ -3,6 +3,7 @@ use warnings;
 use Getopt::Long;
 use Template;
 use XML::Simple qw(:strict);
+use XML::Parser;
 use Data::Dumper;
 
 my (
@@ -27,6 +28,16 @@ $cmakeVars = XMLin(
   ForceArray => 0,
   KeyAttr => []
 );
+
+foreach (keys %$cmakeVars) {
+  my $val = $cmakeVars->{$_};
+
+  if (ref($val) eq 'HASH') {
+    if (not scalar keys %$val) {
+      delete $cmakeVars->{$_};
+    }
+  }
+}
 
 $cmakeVars->{os} = $^O;
 
