@@ -15,12 +15,7 @@ EndMacro (INCLUDE_CMAKE_MODULE)
 Set (CMAKE_GVIM_INIT_FILE_OUT ${CMAKE_BINARY_DIR}/gviminit.vim)
 Set (CMAKE_VARIABLES_XML_OUT_FILE ${CMAKE_BINARY_DIR}/CMakeVariables.xml)
 
-If (WIN32)
-  Add_Definitions ("-DWINDOWS")
-EndIf (WIN32)
-
 Include_Cmake_Module(Macros)
-
 Include_Cmake_Module(Compiler)
 Include_Cmake_Module(C++-11)
 
