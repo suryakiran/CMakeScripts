@@ -1,6 +1,7 @@
 use strict;
 use warnings;
 use Getopt::Long;
+use File::Spec::Functions;
 use Template;
 use XML::Simple qw(:strict);
 use XML::Parser;
@@ -38,6 +39,8 @@ foreach (keys %$cmakeVars) {
     }
   }
 }
+
+$cmakeVars->{PROJECT_VIM_DIR} = catdir ($cmakeVars->{CMAKE_BINARY_DIR}, 'vim');
 
 $cmakeVars->{os} = $^O;
 

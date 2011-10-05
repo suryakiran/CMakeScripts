@@ -1,3 +1,7 @@
+[%- IF PROJECT_VIM_DIR -%]
+:call AddPathToRuntimePath('$PROJECT_VIM_DIR','')
+[%- END %]
+
 set path=.
 
 [%- FOREACH item IN GVIM_SEARCH_DIRS %]
