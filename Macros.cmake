@@ -311,3 +311,118 @@ Macro (CMAKE_LIST_TO_PERL_ARGS p_out p_flag)
     List(APPEND ${p_out} ${arg})
   EndForEach (arg)
 EndMacro (CMAKE_LIST_TO_PERL_ARGS)
+
+Macro (FIND_LIBRARIES p_name)
+  Parse_Arguments(FIND_LIB
+    "EXECUTABLE;HEADER;LIBRARY" "" ${ARGN}
+    )
+
+  String (
+    TOLOWER ${p_name} p_name_lower
+    )
+
+  Set (lib_search_path)
+
+  Execute_Perl (
+    FILE ${PL_FILE_CASE_CONV}
+    ARGS -t camel_case -i ${p_name} 
+    OUTPUT output_file_name
+    )
+
+  Set (${p_name}_SEARCH_PATHS)
+  Set (env_value $ENV{${p_name}_ROOT})
+
+  If (env_value)
+    List (APPEND ${p_name}_SEARCH_PATHS ${env_value})
+  EndIf (env_value)
+
+  If (UNIX)
+    List (APPEND ${p_name}_SEARCH_PATHS APPEND /usr/local /usr)
+  Else (UNIX)
+    Set (env_value $ENV{PACKAGES_DIR})
+    If (env_value)
+      List (APPEND ${p_name}_SEARCH_PATHS ${env_value})
+    EndIf (env_value)
+  EndIf (UNIX)
+
+  If (FIND_LIB_EXECUTABLE)
+    Find_Program (
+      ${p_name}_EXECUTABLE ${FIND_LIB_EXECUTABLE}
+      )
+
+    If (${p_name}_EXECUTABLE)
+      Get_Filename_Component (${p_name}_INC_SEARCH_PATH ${${p_name}_EXECUTABLE} PATH)
+      Get_Filename_Component (${p_name}_ROOT ${${p_name}_INC_SEARCH_PATH} PATH)
+      List (APPEND ${p_name}_SEARCH_PATHS ${${p_name}_ROOT})
+    EndIf (${p_name}_EXECUTABLE)
+  EndIf (FIND_LIB_EXECUTABLE)
+
+  List (LENGTH ${p_name}_SEARCH_PATHS search_paths)
+
+  If (FIND_LIB_HEADER)
+    If (${search_paths})
+      Find_File (
+        ${p_name}_HEADER_FILE ${FIND_LIB_HEADER}
+        PATHS ${${p_name}_SEARCH_PATHS}
+        PATH_SUFFIXES include include/${p_name_lower}
+        NO_DEFAULT_PATH
+        )
+    Else (${search_paths})
+      Find_File (
+        ${p_name}_HEADER_FILE ${FIND_LIB_HEADER}
+        PATH_SUFFIXES include include/${p_name_lower}
+        )
+    EndIf (${search_paths})
+
+    If (${p_name}_HEADER_FILE)
+      String (REGEX REPLACE "/${FIND_LIB_HEADER}\$" "" inc_dir_path ${${p_name}_HEADER_FILE})
+      Set (${p_name}_INCLUDE_DIR ${inc_dir_path} CACHE PATH "${output_file_name} Include Directory")
+      Get_Filename_Component (lib_search_path ${inc_dir_path} PATH)
+    EndIf (${p_name}_HEADER_FILE)
+  EndIf (FIND_LIB_HEADER)
+
+  If (FIND_LIB_LIBRARY)
+    If (${search_paths})
+      Find_Library (
+        ${p_name}_OPTIMIZED_LIBRARY ${FIND_LIB_LIBRARY}
+        PATHS ${lib_search_path} ${${p_name}_SEARCH_PATHS}
+        PATH_SUFFIXES lib
+        NO_DEFAULT_PATH
+        )
+
+      Find_Library (
+        ${p_name}_DEBUG_LIBRARY 
+        NAMES ${FIND_LIB_LIBRARY}d ${FIND_LIB_LIBRARY}
+        PATHS ${lib_search_path} ${${p_name}_SEARCH_PATHS}
+        PATH_SUFFIXES lib-debug lib
+        NO_DEFAULT_PATH
+        )
+    Else (${search_paths})
+      Find_Library (
+        ${p_name}_OPTIMIZED_LIBRARY ${FIND_LIB_LIBRARY}
+        PATHS ${lib_search_path}
+        PATH_SUFFIXES lib
+        )
+
+      Find_Library (
+        ${p_name}_DEBUG_LIBRARY 
+        NAMES ${FIND_LIB_LIBRARY}d ${FIND_LIB_LIBRARY}
+        PATHS ${lib_search_path}
+        PATH_SUFFIXES lib-debug lib
+        )
+    EndIf (${search_paths})
+
+    Execute_Perl (
+      FILE ${PL_FILE_LIBRARY_NAMES}
+      CMAKE_OUTPUT ${CMAKE_BINARY_DIR}/${output_file_name}.cmake
+      ARGS -p ${p_name}
+      )
+  Endif (FIND_LIB_LIBRARY)
+
+  Mark_As_Advanced (
+    ${p_name}_INCLUDE_DIR
+    ${p_name}_EXECUTABLE
+    ${p_name}_HEADER_FILE
+    )
+
+EndMacro (FIND_LIBRARIES)

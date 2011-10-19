@@ -1,9 +1,10 @@
-[%- IF PROJECT_VIM_DIR -%]
+chdir $CMAKE_SOURCE_DIR
+[% IF PROJECT_VIM_DIR -%]
 :call AddPathToRuntimePath('$PROJECT_VIM_DIR','')
 [%- END %]
 
 set path=.
-
+set path+=$CMAKE_SOURCE_DIR
 [%- FOREACH item IN GVIM_SEARCH_DIRS %]
 set path+=[% item %]
 [%- END %]
@@ -11,8 +12,6 @@ set path+=[% item %]
 [% IF os != 'Win32' -%]
 set path+=/usr/include
 [%- END %]
-
-chdir $CMAKE_SOURCE_DIR
 
 function! OpenAlternateFile()
   python << end_of_python
