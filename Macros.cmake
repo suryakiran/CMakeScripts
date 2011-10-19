@@ -314,7 +314,7 @@ EndMacro (CMAKE_LIST_TO_PERL_ARGS)
 
 Macro (FIND_LIBRARIES p_name)
   Parse_Arguments(FIND_LIB
-    "EXECUTABLE;HEADER;LIBRARY" "" ${ARGN}
+    "EXECUTABLE;HEADER;LIBRARIES" "" ${ARGN}
     )
 
   String (
@@ -330,19 +330,19 @@ Macro (FIND_LIBRARIES p_name)
     )
 
   Set (${p_name}_SEARCH_PATHS)
-  Set (env_value $ENV{${p_name}_ROOT})
 
+  Set (env_value $ENV{${p_name}_ROOT})
   If (env_value)
     List (APPEND ${p_name}_SEARCH_PATHS ${env_value})
   EndIf (env_value)
 
+   Set (env_value $ENV{PACKAGES_DIR})
+   If (env_value)
+     List (APPEND ${p_name}_SEARCH_PATHS ${env_value})
+   EndIf (env_value)
+
   If (UNIX)
     List (APPEND ${p_name}_SEARCH_PATHS APPEND /usr/local /usr)
-  Else (UNIX)
-    Set (env_value $ENV{PACKAGES_DIR})
-    If (env_value)
-      List (APPEND ${p_name}_SEARCH_PATHS ${env_value})
-    EndIf (env_value)
   EndIf (UNIX)
 
   If (FIND_LIB_EXECUTABLE)
@@ -381,10 +381,10 @@ Macro (FIND_LIBRARIES p_name)
     EndIf (${p_name}_HEADER_FILE)
   EndIf (FIND_LIB_HEADER)
 
-  If (FIND_LIB_LIBRARY)
+  If (FIND_LIB_LIBRARIES)
     If (${search_paths})
       Find_Library (
-        ${p_name}_OPTIMIZED_LIBRARY ${FIND_LIB_LIBRARY}
+        ${p_name}_OPTIMIZED_LIBRARY ${FIND_LIB_LIBRARIES}
         PATHS ${lib_search_path} ${${p_name}_SEARCH_PATHS}
         PATH_SUFFIXES lib
         NO_DEFAULT_PATH
@@ -392,21 +392,21 @@ Macro (FIND_LIBRARIES p_name)
 
       Find_Library (
         ${p_name}_DEBUG_LIBRARY 
-        NAMES ${FIND_LIB_LIBRARY}d ${FIND_LIB_LIBRARY}
+        NAMES ${FIND_LIB_LIBRARY}d ${FIND_LIB_LIBRARIES}
         PATHS ${lib_search_path} ${${p_name}_SEARCH_PATHS}
         PATH_SUFFIXES lib-debug lib
         NO_DEFAULT_PATH
         )
     Else (${search_paths})
       Find_Library (
-        ${p_name}_OPTIMIZED_LIBRARY ${FIND_LIB_LIBRARY}
+        ${p_name}_OPTIMIZED_LIBRARY ${FIND_LIB_LIBRARIES}
         PATHS ${lib_search_path}
         PATH_SUFFIXES lib
         )
 
       Find_Library (
         ${p_name}_DEBUG_LIBRARY 
-        NAMES ${FIND_LIB_LIBRARY}d ${FIND_LIB_LIBRARY}
+        NAMES ${FIND_LIB_LIBRARY}d ${FIND_LIB_LIBRARIES}
         PATHS ${lib_search_path}
         PATH_SUFFIXES lib-debug lib
         )
@@ -417,7 +417,7 @@ Macro (FIND_LIBRARIES p_name)
       CMAKE_OUTPUT ${CMAKE_BINARY_DIR}/${output_file_name}.cmake
       ARGS -p ${p_name}
       )
-  Endif (FIND_LIB_LIBRARY)
+  Endif (FIND_LIB_LIBRARIES)
 
   Mark_As_Advanced (
     ${p_name}_INCLUDE_DIR
