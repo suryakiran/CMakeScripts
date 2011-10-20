@@ -17,7 +17,7 @@ Set (CMAKE_VARIABLES_XML_OUT_FILE ${CMAKE_BINARY_DIR}/CMakeVariables.xml)
 
 Include_Cmake_Module(Macros)
 Include_Cmake_Module(Compiler)
-#Include_Cmake_Module(C++-11)
+Include_Cmake_Module(C++-11)
 
 Macro (FIND_CMAKE_CONFIGURE_FILE)
   Find_File_In_Dir (${ARGN} ${CMAKE_CONFIG_DIR})
