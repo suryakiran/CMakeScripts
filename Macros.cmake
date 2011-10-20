@@ -338,7 +338,12 @@ Macro (FIND_LIBRARIES p_name)
 
    Set (env_value $ENV{PACKAGES_DIR})
    If (env_value)
+     File (TO_CMAKE_PATH ${env_value} env_value)
      List (APPEND ${p_name}_SEARCH_PATHS ${env_value})
+     File (GLOB dirs "${env_value}/*${output_file_name}*")
+     ForEach (dir ${dirs})
+       List (APPEND LIST_CMAKE_PREFIX_PATHS ${dir})
+     EndForEach (dir)
    EndIf (env_value)
 
   If (UNIX)
@@ -349,6 +354,19 @@ Macro (FIND_LIBRARIES p_name)
     Find_Program (
       ${p_name}_EXECUTABLE ${FIND_LIB_EXECUTABLE}
       )
+
+    If (NOT ${p_name}_EXECUTABLE)
+      ForEach (dir ${LIST_CMAKE_PREFIX_PATHS})
+        Set (CMAKE_PREFIX_PATH ${dir})
+        Find_Program (
+          ${p_name}_EXECUTABLE ${FIND_LIB_EXECUTABLE}
+          )
+        If (${p_name}_EXECUTABLE)
+          Break()
+        EndIf (${p_name}_EXECUTABLE)
+      EndForEach (dir)
+      Set (CMAKE_PREFIX_PATH)
+    EndIf (NOT ${p_name}_EXECUTABLE)
 
     If (${p_name}_EXECUTABLE)
       Get_Filename_Component (${p_name}_INC_SEARCH_PATH ${${p_name}_EXECUTABLE} PATH)
@@ -367,6 +385,16 @@ Macro (FIND_LIBRARIES p_name)
         PATH_SUFFIXES include include/${p_name_lower}
         NO_DEFAULT_PATH
         )
+      If (NOT ${p_name}_HEADER_FILE)
+        ForEach (dir ${LIST_CMAKE_PREFIX_PATHS})
+          Set (CMAKE_PREFIX_PATH ${dir})
+          Find_File (${p_name}_HEADER_FILE ${FIND_LIB_HEADER})
+          If (${p_name}_HEADER_FILE)
+            Break()
+          EndIf (${p_name}_HEADER_FILE)
+        EndForEach (dir)
+        Set (CMAKE_PREFIX_PATH)
+      EndIf (NOT ${p_name}_HEADER_FILE)
     Else (${search_paths})
       Find_File (
         ${p_name}_HEADER_FILE ${FIND_LIB_HEADER}
@@ -390,13 +418,15 @@ Macro (FIND_LIBRARIES p_name)
         NO_DEFAULT_PATH
         )
 
-      Find_Library (
-        ${p_name}_DEBUG_LIBRARY 
-        NAMES ${FIND_LIB_LIBRARY}d ${FIND_LIB_LIBRARIES}
-        PATHS ${lib_search_path} ${${p_name}_SEARCH_PATHS}
-        PATH_SUFFIXES lib-debug lib
-        NO_DEFAULT_PATH
-        )
+      ForEach (l ${FIND_LIB_LIBRARIES})
+        Find_Library (
+          ${p_name}_DEBUG_LIBRARY 
+          NAMES ${l}d ${l}
+          PATHS ${lib_search_path} ${${p_name}_SEARCH_PATHS}
+          PATH_SUFFIXES lib-debug lib
+          NO_DEFAULT_PATH
+          )
+      EndForEach (l)
     Else (${search_paths})
       Find_Library (
         ${p_name}_OPTIMIZED_LIBRARY ${FIND_LIB_LIBRARIES}
@@ -404,12 +434,14 @@ Macro (FIND_LIBRARIES p_name)
         PATH_SUFFIXES lib
         )
 
-      Find_Library (
-        ${p_name}_DEBUG_LIBRARY 
-        NAMES ${FIND_LIB_LIBRARY}d ${FIND_LIB_LIBRARIES}
-        PATHS ${lib_search_path}
-        PATH_SUFFIXES lib-debug lib
-        )
+      ForEach (l ${FIND_LIB_LIBRARIES})
+        Find_Library (
+          ${p_name}_DEBUG_LIBRARY 
+          NAMES ${l}d ${l}
+          PATHS ${lib_search_path}
+          PATH_SUFFIXES lib-debug lib
+          )
+      EndForEach (l)
     EndIf (${search_paths})
 
     Execute_Perl (

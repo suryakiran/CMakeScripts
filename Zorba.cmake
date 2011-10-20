@@ -4,7 +4,7 @@ Find_Libraries (
   ZORBA
   EXECUTABLE zorba
   HEADER xqc.h
-  LIBRARY zorba_simplestore
+  LIBRARIES zorba_simplestore
   )
 
 #If (ZORBA_EXECUTABLE)
