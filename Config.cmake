@@ -32,8 +32,8 @@ Find_Cmake_Configure_File (CMAKE_GVIM_INIT_TMPL_FILE gviminit.vim.tmpl)
 Find_File_In_Dir (CMAKE_CONFIG_FILE Config.cmake ${CMAKE_MODULE_PATH})
 
 OPTION (USE_BOOST "Use Boost Libraries" TRUE)
-OPTION (USE_POCO "Use Poco Libraries" TRUE)
-OPTION (USE_QT "Use Qt Libraries" TRUE)
+OPTION (USE_POCO "Use Poco Libraries" FALSE)
+OPTION (USE_QT "Use Qt Libraries" FALSE)
 
 Include_Cmake_Module(Git)
 Include_Cmake_Module(Definitions)
