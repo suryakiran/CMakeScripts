@@ -1,4 +1,4 @@
-package @PACKAGE_NAME@;
+package $PACKAGE_NAME;
 
 use strict;
 use warnings;
@@ -12,13 +12,13 @@ our %EXPORT_TAGS = (
   'all' => [qw ()]
 );
 
-our @EXPORT_OK = (@{$EXPORT_TAGS{all}});
+our @EXPORT_OK = (@{\$EXPORT_TAGS{all}});
 
 our @EXPORT = qw (
 );
 
-our $VERSION = '0.01';
+our \$VERSION = '0.01';
 
-bootstrap @PACKAGE_NAME@ $VERSION;
+bootstrap @PACKAGE_NAME@ \$VERSION;
 
 1;
