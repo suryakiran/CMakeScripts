@@ -17,7 +17,15 @@ Set (CMAKE_VARIABLES_XML_OUT_FILE ${CMAKE_BINARY_DIR}/CMakeVariables.xml)
 
 Include_Cmake_Module(Macros)
 Include_Cmake_Module(Compiler)
-#Include_Cmake_Module(C++-11)
+
+OPTION (USE_BOOST "Use Boost Libraries" TRUE)
+OPTION (USE_POCO "Use Poco Libraries" FALSE)
+OPTION (USE_QT "Use Qt Libraries" FALSE)
+OPTION (CXX_11 "Use Cxx11 Features" FALSE)
+
+If (CXX_11)
+  Include_Cmake_Module(C++-11)
+EndIf (CXX_11)
 
 Macro (FIND_CMAKE_CONFIGURE_FILE)
   Find_File_In_Dir (${ARGN} ${CMAKE_CONFIG_DIR})
@@ -30,10 +38,6 @@ Find_Cmake_Configure_File (CMAKE_VARIABLES_XML_IN_FILE CmakeVariables.xml.in)
 Find_Cmake_Configure_File (CMAKE_GVIM_INIT_TMPL_FILE gviminit.vim.tmpl)
 
 Find_File_In_Dir (CMAKE_CONFIG_FILE Config.cmake ${CMAKE_MODULE_PATH})
-
-OPTION (USE_BOOST "Use Boost Libraries" TRUE)
-OPTION (USE_POCO "Use Poco Libraries" FALSE)
-OPTION (USE_QT "Use Qt Libraries" FALSE)
 
 Include_Cmake_Module(Git)
 Include_Cmake_Module(Definitions)
