@@ -32,7 +32,7 @@ Macro (FIND_CMAKE_CONFIGURE_FILE)
 EndMacro (FIND_CMAKE_CONFIGURE_FILE)
 
 Find_Cmake_Configure_File (CMAKE_DLL_H_IN_FILE Dll.h.in)
-Find_Cmake_Configure_File (CMAKE_PERL_EXTENSION_MODULE_FILE PerlExtensionModule.pm.in)
+Find_Cmake_Configure_File (CMAKE_PERL_EXTENSION_MODULE_FILE PerlExtensionModule.pm.tmpl)
 Find_Cmake_Configure_File (CMAKE_VCPROJ_USER_IN_FILE Vcproj.user.in)
 Find_Cmake_Configure_File (CMAKE_VARIABLES_XML_IN_FILE CmakeVariables.xml.in)
 Find_Cmake_Configure_File (CMAKE_GVIM_INIT_TMPL_FILE gviminit.vim.tmpl)
