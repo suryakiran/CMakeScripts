@@ -138,7 +138,7 @@ Function (CHECK_PERL_MODULES)
   EndIf (ARGN)
 EndFunction (CHECK_PERL_MODULES)
 
-Function (CREATE_PERL_XSI_LIBRARY)
+Function (CREATE_PERL_XSI_LIBRARY PerlXsiFile)
   Parse_Arguments (
     PERL_XSI
     "MODULES;DEPENDENCIES;PERL_C_MODULES" "" ${ARGN}
@@ -151,7 +151,6 @@ Function (CREATE_PERL_XSI_LIBRARY)
     List (APPEND Args "${arg}")
   EndForEach (arg ${ARGN})
 
-  Set (PerlXsiFile ${CMAKE_CURRENT_BINARY_DIR}/${XsiName}.c)
   List (APPEND Args "-o")
   List (APPEND Args ${PerlXsiFile})
 
