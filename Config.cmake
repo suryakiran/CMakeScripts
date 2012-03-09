@@ -43,4 +43,6 @@ Include_Cmake_Module(Git)
 Include_Cmake_Module(Definitions)
 Include_Cmake_Module(BuildDirectories)
 
+Set(Boost_ADDITIONAL_VERSIONS "1.49")
+
 Configure_File (${CMAKE_VARIABLES_XML_IN_FILE} ${CMAKE_VARIABLES_XML_OUT_FILE})
