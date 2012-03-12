@@ -45,4 +45,17 @@ Include_Cmake_Module(BuildDirectories)
 
 Set(Boost_ADDITIONAL_VERSIONS "1.49")
 
+If (USE_BOOST)
+  Find_Package(Boost
+    COMPONENTS date_time program_options filesystem system thread signals wave
+    regex
+    )
+EndIf (USE_BOOST)
+
+If (USE_QT)
+  Find_Package (Qt4 COMPONENTS QtCore QtGui)
+  Get_Filename_Component (QT_BIN_DIR ${QT_QMAKE_EXECUTABLE} PATH CACHE)
+  Include (${QT_USE_FILE})
+EndIf (USE_QT)
+
 Configure_File (${CMAKE_VARIABLES_XML_IN_FILE} ${CMAKE_VARIABLES_XML_OUT_FILE})
