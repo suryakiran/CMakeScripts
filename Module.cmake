@@ -85,8 +85,10 @@ MACRO (MODULE)
 
 	If (${ModuleTarget_TYPE} STREQUAL "SharedLibrary" OR ${ModuleTarget_TYPE} STREQUAL "Module")
 		Set (BUILD_LIB_TYPE SHARED)
+    Set (LibPrefix lib)
 		If (${ModuleTarget_TYPE} STREQUAL "Module")
 			Set (BUILD_LIB_TYPE MODULE)
+      Set (LibPrefix "")
 		EndIf ()
 		Include_Directories (${DLL_UTILITIES_DIR})
 		Set (LibName ${ModuleTarget_NAME})
@@ -96,7 +98,11 @@ MACRO (MODULE)
 			${ModuleTarget_NAME} ${BUILD_LIB_TYPE}
 			${SRC_FILES} ${DllOutFile}
 			)
-		Set_Target_Properties (${ModuleTarget_NAME} PROPERTIES DEBUG_POSTFIX d)
+    Set_Target_Properties (${ModuleTarget_NAME} PROPERTIES DEBUG_POSTFIX d)
+
+    If (LibPrefix)
+      Set_Target_Properties (${ModuleTarget_NAME} PROPERTIES PREFIX ${LibPrefix})
+    EndIf (LibPrefix)
 	ElseIf (${ModuleTarget_TYPE} STREQUAL "Executable")
 		Add_Executable (
 			${ModuleTarget_NAME} ${SRC_FILES}

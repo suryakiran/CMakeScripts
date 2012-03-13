@@ -26,6 +26,7 @@ if ($^O =~ /^MSWin32$/) {
 }
 
 my $libNames;
+my @libPaths;
 
 sub findModuleInDir {
   my ($module, $dir) = @_;
@@ -44,7 +45,10 @@ sub findModuleInDir {
     sprintf("%s.%s", $modArray[$#modArray], $libExt
     ));
 
+  my $libPath = dirname ($libName);
   $libName =~ s,\\,/,g;
+  $libPath =~ s,\\,/,g;
+  push @libPaths, $libPath;
 
   if (-e $libName) {
     $libNames->{$module}->{CmakeCacheName} = $cmakeName;
@@ -57,6 +61,8 @@ Set(
   "Perl $module C Module"
   )
 
+Set_Property (GLOBAL APPEND PROPERTY PERL_C_MODULE_PATHS $libPath)
+
 eof
     return true;
   }
@@ -68,13 +74,12 @@ if ($modules) {
 
   open FH, ">$outFile";
 
+  printf FH "Set (pathList)\n";
   foreach (@$modules) {
     if (!findModuleInDir($_, $archDir)) {
       findModuleInDir($_, $sitePerl);
     }
   }
-
-#Set_Property (TARGET PerlCModuleIO PROPERTY IMPORTED_LOCATION ${PERL_C_MODULE_IO})
 
   printf FH "Mark_As_Advanced (\n";
   foreach (@$modules) {

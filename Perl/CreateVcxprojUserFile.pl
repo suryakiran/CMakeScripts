@@ -3,29 +3,92 @@ use warnings;
 use Getopt::Long;
 use XML::LibXML;
 use File::Spec::Functions;
+use File::Basename;
+use Data::Dumper;
 
 my (
   $outputFile,
   $workingDirectory,
   $args,
+  $kwargs,
   $xmlFile,
   $exeFile,
-  @libPaths,
-  @envVar,
+  $envVars,
+  $confDirs,
+  $pathEnv,
 );
 
-my $status = GetOptions (
+sub handleEnvVars {
+  my ($option, $arg) = @_;
+  my $conf = 'all';
+
+  if ($arg =~ /^(Debug|Release|MinSizeRel|RelWithDebInfo):?(.*)/) {
+    $conf = $1;
+    $arg = $2 || undef;
+  }
+
+  if (not $arg) {
+    return;
+  }
+
+  my ($key, $value) = split(/=/, $arg, 2);
+  if ($key && $value) {
+    push (@{$envVars->{$conf}->{$key}}, $value);
+  }
+}
+
+sub handleArgs {
+  my ($option, $arg) = @_;
+  my $conf = 'all';
+  my $data = $arg;
+  if ($arg =~ /^(Debug|Release|MinSizeRel|RelWithDebInfo):?(.*)/) {
+    $conf = $1;
+    $data = $2 || undef;
+  }
+
+  if (not $data) {
+    return;
+  }
+
+  my ($key, $value) = split(/=/, $data, 2);
+  if ($key && $value) {
+    $kwargs->{$conf}->{$key} = $value;
+  } else {
+    push (@{$args->{$conf}}, $key);
+  }
+}
+
+sub handleLibDirs {
+  my ($option, $value) = @_;
+  my $conf = 'all';
+  if ($value =~ /^(Debug|Release|MinSizeRel|RelWithDebInfo):(.*)/) {
+    $conf = $1;
+    $value = $2;
+  }
+  push (@{$pathEnv->{$conf}}, $value);
+} 
+
+my $status = 
+GetOptions (
   'output|o=s' => \$outputFile,
   'working-directory|w=s' => \$workingDirectory,
-  'args|a=s@' => \$args,
   'xml-file|x=s' => \$xmlFile,
   'exe-file|e=s' => \$exeFile,
-  'lib-paths|l=s{,}' => \@libPaths,
-  'env-var|v=s{,}' => \@envVar
+  'dir=s@' => sub {
+    my ($option, $value) = @_;
+    if ($value =~ /^(Debug|Release|MinSizeRel|RelWithDebInfo):(.*)/) {
+      $confDirs->{$1} = $2;
+    } else {
+      $confDirs->{all} = $2;
+    }
+  },
+  'args|a=s@' => \&handleArgs,
+  'lib-dir=s@' => \&handleLibDirs,
+  'env-var|v=s@' => \&handleEnvVars,
 );
 
 $workingDirectory = $workingDirectory || "\$(ProjectDir)";
-$args = $args || [];
+$args = $args || {};
 
 my $parser = XML::LibXML->new();
 my $cmakeDoc = $parser->parse_file ($xmlFile);
@@ -53,10 +116,18 @@ sub _TextNode {
 sub _CreatePropertyGroupNode {
   my ($conf, $plat) = @_;
   my $conf_u = uc($conf);
-  my $path = catfile (
-    canonpath($cmakeDoc->findvalue("//CMAKE_RUNTIME_OUTPUT_DIRECTORY_$conf_u")), 
-    $exeFile
-  );
+
+  my $exePath;
+
+  if (exists $confDirs->{$conf}) {
+    $exePath = catfile ($confDirs->{$conf}, basename ($exeFile));
+  } else {
+    $exePath = catfile (
+      canonpath($cmakeDoc->findvalue("//CMAKE_RUNTIME_OUTPUT_DIRECTORY_$conf_u")), 
+      $exeFile
+    );
+  }
+
   my $node = $doc->createElement ("PropertyGroup");
   my $attNode = $doc->createAttribute ( 
     "Condition", 
@@ -65,23 +136,49 @@ sub _CreatePropertyGroupNode {
   $node->setAttributeNode ($attNode);
   $root->appendChild ($node);
 
-  foreach (@libPaths) {
+  foreach (@{$pathEnv->{$conf}}) {
     $_ = canonpath($_);
   }
+
+  foreach (@{$pathEnv->{all}}) {
+    $_ = canonpath($_);
+  }
+
+  my @envVarsToWrite;
 
   my @path;
   unshift @path, "%PATH%";
   unshift @path, "$boost_lib_dir";
   unshift @path, "$qt_bin_dir";
-  unshift @path, @libPaths;
+  unshift @path, @{$pathEnv->{$conf}};
+  unshift @path, @{$pathEnv->{all}};
+
+  push @envVarsToWrite, ("PATH=" . join(';', @path));
+
+  my @argArray;
+  
+  foreach my $c ($conf, 'all') {
+    foreach (keys %{$kwargs->{$c}}) {
+      push @argArray, sprintf("--%s=\"%s\"", $_,canonpath($kwargs->{$c}->{$_}));
+    }
+  }
+
+  my @evars;
+  foreach my $c ($conf, 'all') {
+    foreach (keys %{$envVars->{$c}}) {
+      my @val = @{$envVars->{$c}->{$_}};
+      @val = map {canonpath($_)} @val;
+      push @envVarsToWrite, ("$_=" . join(';', @val, ("%" . $_ . "%")));
+    }
+  }
 
   _TextNode ($node, "LocalDebuggerSQLDebugging", "false");
   _TextNode ($node, "DebuggerFlavor", "WindowsLocalDebugger");
   _TextNode ($node, "LocalDebuggerAttach", "false");
-  _TextNode ($node, "LocalDebuggerCommand", $path);
-  _TextNode ($node, "LocalDebuggerCommandArguments", join(' ', @$args));
+  _TextNode ($node, "LocalDebuggerCommand", $exePath);
+  _TextNode ($node, "LocalDebuggerCommandArguments", join(' ', @argArray));
   _TextNode ($node, "LocalDebuggerWorkingDirectory", $workingDirectory);
-  _TextNode ($node, "LocalDebuggerEnvironment", "PATH=".join(';', @path));
+  _TextNode ($node, "LocalDebuggerEnvironment", join("\n", @envVarsToWrite));
 
   return $node;
 }

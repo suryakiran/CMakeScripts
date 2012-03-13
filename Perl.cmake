@@ -165,6 +165,7 @@ Function (CREATE_PERL_XSI_LIBRARY PerlXsiFile)
   Include_Directories (${DLL_UTILITIES_DIR})
   Add_Library (${XsiName} SHARED ${PerlXsiFile} ${DllOutFile})
   Target_Link_Libraries (${XsiName} ${PERL_XSI_DEPENDENCIES} ${PERL_LIBRARY})
+  Set_Target_Properties (${XsiName} PROPERTIES PREFIX lib)
   Perl_Xsi_Depends (${XsiName} ${PERL_XSI_PERL_C_MODULES})
 EndFunction (CREATE_PERL_XSI_LIBRARY)
 

@@ -56,6 +56,7 @@ If (USE_QT)
   Find_Package (Qt4 COMPONENTS QtCore QtGui)
   Get_Filename_Component (QT_BIN_DIR ${QT_QMAKE_EXECUTABLE} PATH CACHE)
   Include (${QT_USE_FILE})
+  Include (${CMAKE_MODULE_PATH}/Qt.cmake)
 EndIf (USE_QT)
 
 Configure_File (${CMAKE_VARIABLES_XML_IN_FILE} ${CMAKE_VARIABLES_XML_OUT_FILE})
