@@ -202,6 +202,18 @@ Function (PROCESS_PERL_TEMPLATE)
     )
 EndFunction (PROCESS_PERL_TEMPLATE)
 
+Function (CREATE_VCXPROJ_USER_FILE exeName)
+  Execute_Perl (
+    FILE
+      ${PL_FILE_VCXPROJ_USER_FILE}
+    ARGS
+      -o ${CMAKE_CURRENT_BINARY_DIR}/${exeName}.vcxproj.user
+      -x ${CMAKE_VARIABLES_XML_OUT_FILE}
+      -e ${exeName}
+      ${ARGN}
+      )
+EndFunction (CREATE_VCXPROJ_USER_FILE)
+
 Find_Perl_File(PL_FILE_PARSE_XS ParseXS.pl)
 Find_Perl_File(PL_FILE_XS_DEPENDENCIES GetXSDependencies.pl)
 Find_Perl_File(PL_FILE_INSTALL_MODULES InstallPerlModules.pl)
