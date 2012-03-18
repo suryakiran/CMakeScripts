@@ -199,4 +199,4 @@ sub _CreatePropertyGroupNode {
   my $relWithDebInfo = _CreatePropertyGroupNode ("RelWithDebInfo", "Win32");
 }
 
-$doc->toFile ($outputFile, 2);
+$doc->toFile ($outputFile, 1);
