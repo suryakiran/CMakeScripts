@@ -16,12 +16,13 @@ Set (CMAKE_GVIM_INIT_FILE_OUT ${CMAKE_BINARY_DIR}/gviminit.vim)
 Set (CMAKE_VARIABLES_XML_OUT_FILE ${CMAKE_BINARY_DIR}/CMakeVariables.xml)
 
 Include_Cmake_Module(Macros)
+
+OPTION (CXX_11 "Use Cxx11 Features" FALSE)
 Include_Cmake_Module(Compiler)
 
 OPTION (USE_BOOST "Use Boost Libraries" TRUE)
 OPTION (USE_POCO "Use Poco Libraries" FALSE)
 OPTION (USE_QT "Use Qt Libraries" FALSE)
-OPTION (CXX_11 "Use Cxx11 Features" FALSE)
 
 If (CXX_11)
   Include_Cmake_Module(C++-11)
