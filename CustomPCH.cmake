@@ -10,6 +10,10 @@
 
 Macro(PRECOMPILED_HEADER sources includes target_name header_name)
 
+  Parse_Arguments (PCH
+    "TYPE" "" ${ARGN}
+    )
+
   # MSVC precompiled headers cmake code
   If ( MSVC )
     Set_Source_Files_Properties( ${header_name}.cpp PROPERTIES COMPILE_FLAGS "/Yc${header_name}.h" )
@@ -33,6 +37,14 @@ Macro(PRECOMPILED_HEADER sources includes target_name header_name)
     # Get the compiler flags for this build type
     String( TOUPPER "CMAKE_CXX_FLAGS_${CMAKE_BUILD_TYPE}" flags_for_build_name )
     Set( compile_flags ${${flags_for_build_name}} )
+
+    If (PCH_TYPE)
+      If (${PCH_TYPE} MATCHES "SHARED|MODULE")
+        String(TOUPPER "CMAKE_SHARED_LIBRARY_CXX_FLAGS_${CMAKE_BUILD_TYPE}" flags_for_build_name)
+        List (APPEND compile_flags ${${flags_for_build_name}})
+        List (APPEND compile_flags ${CMAKE_SHARED_LIBRARY_CXX_FLAGS})
+      EndIf (${PCH_TYPE} MATCHES "SHARED|MODULE")
+    EndIf (PCH_TYPE)
 
     # Add all the Qt include directories
     ForEach( item ${${includes}} )
