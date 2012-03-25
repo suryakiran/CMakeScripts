@@ -8,26 +8,27 @@
 # "header_name" - the name of the PCH header, without the extension; "stdafx" or something similar;
 #                  note that the source file compiling the header needs to have the same name 
 
-Macro(PRECOMPILED_HEADER sources includes target_name header_name)
+Macro(PRECOMPILED_HEADER)
 
   Parse_Arguments (PCH
-    "TYPE" "" ${ARGN}
+    "TYPE;SOURCES;TARGET_NAME;HEADER;INCLUDES" "" ${ARGN}
     )
 
   # MSVC precompiled headers cmake code
   If ( MSVC )
-    Set_Source_Files_Properties( ${header_name}.cpp PROPERTIES COMPILE_FLAGS "/Yc${header_name}.h" )
+    Set_Source_Files_Properties( ${PCH_HEADER}.cpp PROPERTIES COMPILE_FLAGS "/Yc${PCH_HEADER}.h" )
 
-    ForEach( src_file ${${sources}} )
+    ForEach( src_file ${PCH_SOURCES} )
       If( ${src_file} MATCHES ".*cpp$" )
-        set_source_files_properties( ${src_file} PROPERTIES COMPILE_FLAGS "/Yu${header_name}.h" )
+        set_source_files_properties( ${src_file} PROPERTIES COMPILE_FLAGS "/Yu${PCH_HEADER}.h" )
       EndIf()
     EndForEach()
 
-    # ${header_name}.cpp has to come before ${header_name}.h, 
+    # ${PCH_HEADER}.cpp has to come before ${PCH_HEADER}.h, 
     # otherwise we get a linker error...
-    List( INSERT ${sources} 0 ${header_name}.h )
-    List( INSERT ${sources} 0 ${header_name}.cpp )
+    # TODO insert sources here
+    #List( INSERT ${sources} 0 ${PCH_HEADER}.h )
+    #List( INSERT ${sources} 0 ${PCH_HEADER}.cpp )
 
     # GCC precompiled headers cmake code
     # We don't do this on Macs since GCC there goes haywire
@@ -48,7 +49,7 @@ Macro(PRECOMPILED_HEADER sources includes target_name header_name)
     EndIf (PCH_TYPE)
 
     # Add all the Qt include directories
-    ForEach( item ${${includes}} )
+    ForEach( item ${PCH_INCLUDES}} )
       List( APPEND compile_flags "-I${item}" )
     EndForEach()
 
@@ -77,16 +78,16 @@ Macro(PRECOMPILED_HEADER sources includes target_name header_name)
     # the ${header_name}.h file hasn't changed. We add it to
     # a special add_custom_command to work around this problem.        
 
-    Get_Filename_Component (header_basename ${header_name} NAME)
+    Get_Filename_Component (header_basename ${PCH_HEADER} NAME)
     Set (output_gch_file ${CMAKE_CURRENT_BINARY_DIR}/${header_basename}.gch)
 
-    Add_Custom_Target( ${target_name} ALL
+    Add_Custom_Target( ${PCH_TARGET_NAME} ALL
       DEPENDS ${output_gch_file}
       )
 
     Add_Custom_Command( OUTPUT ${output_gch_file} 
-      COMMAND ${CMAKE_CXX_COMPILER} ${compile_flags} ${header_name} -o ${output_gch_file}
-      MAIN_DEPENDENCY ${header_name}
+      COMMAND ${CMAKE_CXX_COMPILER} ${compile_flags} ${PCH_HEADER} -o ${output_gch_file}
+      MAIN_DEPENDENCY ${PCH_HEADER}
       )
   EndIf() 
 EndMacro()
