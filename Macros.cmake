@@ -99,8 +99,7 @@ MACRO (ADD_COMPILER_FLAGS)
       IF (NOT CVAR)
         SET (CMAKE_CXX_FLAGS
           "${CMAKE_CXX_FLAGS} ${FLAG}"
-          CACHE STRING
-          "Compilation Flags" FORCE)
+          )
       ENDIF (NOT CVAR)
     ENDFOREACH (FLAG)
 
@@ -115,8 +114,7 @@ MACRO (ADD_COMPILER_FLAGS)
       IF (NOT RVAR)
         SET (CMAKE_CXX_FLAGS_RELEASE
           "${CMAKE_CXX_FLAGS_RELEASE} ${FLAG}"
-          CACHE STRING
-          "Release Compilation Flags" FORCE)
+          )
       ENDIF (NOT RVAR)
     ENDFOREACH (FLAG)
 
@@ -131,8 +129,7 @@ MACRO (ADD_COMPILER_FLAGS)
       IF (NOT DVAR)
         SET (CMAKE_CXX_FLAGS_DEBUG 
           "${CMAKE_CXX_FLAGS_DEBUG} ${FLAG}"
-          CACHE STRING
-          "Debug Flags for Gtkmm" FORCE)
+          )
       ENDIF (NOT DVAR)
     ENDFOREACH (FLAG)
 
