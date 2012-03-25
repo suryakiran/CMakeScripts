@@ -49,7 +49,7 @@ Macro(PRECOMPILED_HEADER)
     EndIf (PCH_TYPE)
 
     # Add all the Qt include directories
-    ForEach( item ${PCH_INCLUDES}} )
+    ForEach( item ${PCH_INCLUDES} )
       List( APPEND compile_flags "-I${item}" )
     EndForEach()
 
