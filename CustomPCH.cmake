@@ -37,6 +37,7 @@ Macro(PRECOMPILED_HEADER sources includes target_name header_name)
     # Get the compiler flags for this build type
     String( TOUPPER "CMAKE_CXX_FLAGS_${CMAKE_BUILD_TYPE}" flags_for_build_name )
     Set( compile_flags ${${flags_for_build_name}} )
+    List (APPEND compile_flags "${CMAKE_CXX_FLAGS}")
 
     If (PCH_TYPE)
       If (${PCH_TYPE} MATCHES "SHARED|MODULE")
