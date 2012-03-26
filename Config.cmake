@@ -18,6 +18,7 @@ Set (CMAKE_GVIM_INIT_FILE_OUT ${CMAKE_BINARY_DIR}/gviminit.vim)
 Set (CMAKE_VARIABLES_XML_OUT_FILE ${CMAKE_BINARY_DIR}/CMakeVariables.xml)
 
 Include_Cmake_Module(Macros)
+Include_Cmake_Module(CustomPCH)
 
 OPTION (CXX_11 "Use Cxx11 Features" FALSE)
 Include_Cmake_Module(Compiler)

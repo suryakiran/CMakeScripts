@@ -16,11 +16,13 @@ open (FILE, ">$outputFile");
 my $archDir = $Config{installarchlib};
 my $siteArchDir = $Config{installsitearch};
 my $prefix = $Config{installprefix};
+my $binDir = $Config{bin};
 
 $archDirSuffix = substr($archDir, length($prefix));
 $archDirSuffix =~ s,\\,/,g;
 $archDir =~ s,\\,/,g;
 $siteArchDir =~ s,\\,/,g;
+$binDir =~ s,\\,/,g;
 
 if (-e catfile ($Config{installarchlib}, 'CORE', 'perl.h')) {
   my $dir = catfile($Config{installarchlib}, 'CORE');
@@ -60,6 +62,11 @@ Set (
 Set (
   PERL_SITE_ARCH_DIR $siteArchDir 
   CACHE STRING "Perl Site Arch Lib Directory"
+  )
+
+Set (
+  PERL_BIN_DIR $binDir
+  CACHE STRING "Perl Binary Directory"
   )
 
 Mark_As_Advanced (
