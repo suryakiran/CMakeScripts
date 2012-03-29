@@ -14,18 +14,8 @@ Macro(PRECOMPILED_HEADER)
     "TYPE;SOURCES;TARGET_NAME;HEADER;INCLUDES" "" ${ARGN}
     )
 
-  Set (PCH_IN_FILE ${CMAKE_BINARY_DIR}/test.xml)
-  Set (PCH_SOURCE_FILE ${CMAKE_BINARY_DIR}/test.cxx)
-
   # MSVC precompiled headers cmake code
   If ( MSVC )
-    Get_Filename_Component (PCH_HEADER_BASENAME ${PCH_HEADER} NAME)
-    Configure_File (${CMAKE_PCH_IN_FILE} ${PCH_IN_FILE} @ONLY)
-    Configure_File (${CMAKE_PCH_SOURCE_IN_FILE} ${PCH_SOURCE_FILE} @ONLY)
-    Execute_Perl (
-      FILE ${PL_FILE_PCH_FILE}
-      ARGS -x ${PCH_IN_FILE} -c Debug
-      )
     Set_Source_Files_Properties( ${PCH_HEADER}.cpp PROPERTIES COMPILE_FLAGS "/Yc${PCH_HEADER}.h" )
 
     ForEach( src_file ${PCH_SOURCES} )

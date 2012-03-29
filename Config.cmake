@@ -40,8 +40,6 @@ Find_Cmake_Configure_File (CMAKE_PERL_EXTENSION_MODULE_FILE PerlExtensionModule.
 Find_Cmake_Configure_File (CMAKE_VCPROJ_USER_IN_FILE Vcproj.user.in)
 Find_Cmake_Configure_File (CMAKE_VARIABLES_XML_IN_FILE CmakeVariables.xml.in)
 Find_Cmake_Configure_File (CMAKE_GVIM_INIT_TMPL_FILE gviminit.vim.tmpl)
-Find_Cmake_Configure_File (CMAKE_PCH_IN_FILE Pch.xml.in)
-Find_Cmake_Configure_File (CMAKE_PCH_SOURCE_IN_FILE Pch.cxx.in)
 
 Find_File_In_Dir (CMAKE_CONFIG_FILE Config.cmake ${CMAKE_MODULE_PATH})
 
