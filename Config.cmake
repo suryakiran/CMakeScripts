@@ -47,7 +47,7 @@ Include_Cmake_Module(Git)
 Include_Cmake_Module(Definitions)
 Include_Cmake_Module(BuildDirectories)
 
-Set(Boost_ADDITIONAL_VERSIONS "1.49")
+Set(Boost_ADDITIONAL_VERSIONS "1.50" "1.49")
 
 If (USE_BOOST)
   Find_Package(Boost
