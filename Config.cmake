@@ -27,6 +27,27 @@ OPTION (USE_BOOST "Use Boost Libraries" TRUE)
 OPTION (USE_POCO "Use Poco Libraries" FALSE)
 OPTION (USE_QT "Use Qt Libraries" FALSE)
 
+Set(Boost_ADDITIONAL_VERSIONS 
+  1.60.1 1.60
+  1.59.1 1.59
+  1.58.1 1.58
+  1.57.1 1.57
+  1.56.1 1.56
+  1.55.1 1.55
+  1.54.1 1.54
+  1.53.1 1.53
+  1.52.1 1.52
+  1.51.1 1.51
+  1.50.1 1.50
+  )
+
+If (USE_BOOST)
+  Find_Package(Boost
+    COMPONENTS date_time program_options filesystem system thread signals wave
+    chrono regex
+    )
+EndIf (USE_BOOST)
+
 If (CXX_11)
   Include_Cmake_Module(C++-11)
 EndIf (CXX_11)
