@@ -2,6 +2,8 @@ If (${CMAKE_SOURCE_DIR} STREQUAL ${CMAKE_BINARY_DIR})
   Message (FATAL_ERROR "In source builds are not supported. Bailing out now")
 EndIf (${CMAKE_SOURCE_DIR} STREQUAL ${CMAKE_BINARY_DIR})
 
+Set (DLL_UTILITIES_DIR ${CMAKE_BINARY_DIR}/DllUtilities)
+
 Get_Filename_Component (CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/CMake ABSOLUTE CACHE)
 Get_Filename_Component (CMAKE_PERL_DIR ${CMAKE_MODULE_PATH}/Perl ABSOLUTE CACHE)
 Get_Filename_Component (CMAKE_PYTHON_DIR ${CMAKE_MODULE_PATH}/Python ABSOLUTE CACHE)
@@ -22,6 +24,27 @@ OPTION (USE_BOOST "Use Boost Libraries" TRUE)
 OPTION (USE_POCO "Use Poco Libraries" FALSE)
 OPTION (USE_QT "Use Qt Libraries" FALSE)
 OPTION (CXX_11 "Use Cxx11 Features" FALSE)
+
+Set(Boost_ADDITIONAL_VERSIONS 
+  1.60.1 1.60
+  1.59.1 1.59
+  1.58.1 1.58
+  1.57.1 1.57
+  1.56.1 1.56
+  1.55.1 1.55
+  1.54.1 1.54
+  1.53.1 1.53
+  1.52.1 1.52
+  1.51.1 1.51
+  1.50.1 1.50
+  )
+
+If (USE_BOOST)
+  Find_Package(Boost
+    COMPONENTS date_time program_options filesystem system thread signals wave
+    chrono regex
+    )
+EndIf (USE_BOOST)
 
 If (CXX_11)
   Include_Cmake_Module(C++-11)

@@ -1,6 +1,6 @@
 chdir $CMAKE_SOURCE_DIR
 [% IF PROJECT_VIM_DIR -%]
-:call AddPathToRuntimePath('$PROJECT_VIM_DIR','')
+":call AddPathToRuntimePath('$PROJECT_VIM_DIR','')
 [%- END %]
 
 set path=.
@@ -55,4 +55,4 @@ nmap <silent> ]i :call OpenFile('$CMAKE_GVIM_INIT_TMPL_FILE')<CR>
 nmap <silent> ]p :call OpenFile('$PROJECT_LIST_FILE')<CR>
 [%- END %]
 nmap [b :e $CMAKE_BINARY_DIR/
-nmap [s :e $CMAKE_SOURCE_DIR/
+"nmap [s :e $CMAKE_SOURCE_DIR/
