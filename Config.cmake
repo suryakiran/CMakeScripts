@@ -52,7 +52,7 @@ Set(Boost_ADDITIONAL_VERSIONS "1.51" "1.50")
 If (USE_BOOST)
   Find_Package(Boost
     COMPONENTS date_time program_options filesystem system thread signals wave
-    regex chrono
+    chrono regex
     )
 EndIf (USE_BOOST)
 
