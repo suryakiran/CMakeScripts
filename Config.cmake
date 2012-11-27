@@ -47,12 +47,12 @@ Include_Cmake_Module(Git)
 Include_Cmake_Module(Definitions)
 Include_Cmake_Module(BuildDirectories)
 
-Set(Boost_ADDITIONAL_VERSIONS "1.50" "1.49")
+Set(Boost_ADDITIONAL_VERSIONS "1.51" "1.50")
 
 If (USE_BOOST)
   Find_Package(Boost
     COMPONENTS date_time program_options filesystem system thread signals wave
-    regex
+    regex chrono
     )
 EndIf (USE_BOOST)
 
