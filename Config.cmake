@@ -39,12 +39,13 @@ Set(Boost_ADDITIONAL_VERSIONS
   1.52.1 1.52
   1.51.1 1.51
   1.50.1 1.50
+  1.46.1
   )
 
 If (USE_BOOST)
-  Find_Package(Boost
+  Find_Package(Boost 1.52
     COMPONENTS date_time program_options filesystem system thread signals wave
-    chrono regex
+     regex
     )
 EndIf (USE_BOOST)
 
@@ -67,15 +68,6 @@ Find_File_In_Dir (CMAKE_CONFIG_FILE Config.cmake ${CMAKE_MODULE_PATH})
 Include_Cmake_Module(Git)
 Include_Cmake_Module(Definitions)
 Include_Cmake_Module(BuildDirectories)
-
-Set(Boost_ADDITIONAL_VERSIONS "1.51" "1.50")
-
-If (USE_BOOST)
-  Find_Package(Boost
-    COMPONENTS date_time program_options filesystem system thread signals wave
-    chrono regex
-    )
-EndIf (USE_BOOST)
 
 If (USE_QT)
   Find_Package (Qt4 COMPONENTS QtCore QtGui)
