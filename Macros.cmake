@@ -1,5 +1,3 @@
-INCLUDE (${CMAKE_MODULE_PATH}/Boost.cmake)
-
 MACRO (GET_GCC_VERSION OUT)
   EXECUTE_PROCESS (
     COMMAND gcc -dumpversion 
