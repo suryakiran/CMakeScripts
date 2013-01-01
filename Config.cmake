@@ -16,6 +16,7 @@ EndMacro (INCLUDE_CMAKE_MODULE)
 
 Set (CMAKE_GVIM_INIT_FILE_OUT ${CMAKE_BINARY_DIR}/gviminit.vim)
 Set (CMAKE_VARIABLES_XML_OUT_FILE ${CMAKE_BINARY_DIR}/CMakeVariables.xml)
+Set (CMAKE_VARIABLES_YML_OUT_FILE ${CMAKE_BINARY_DIR}/CMakeVariables.yml)
 
 Include_Cmake_Module(Macros)
 Include_Cmake_Module(CustomPCH)
@@ -61,6 +62,7 @@ Find_Cmake_Configure_File (CMAKE_DLL_H_IN_FILE Dll.h.in)
 Find_Cmake_Configure_File (CMAKE_PERL_EXTENSION_MODULE_FILE PerlExtensionModule.pm.tmpl)
 Find_Cmake_Configure_File (CMAKE_VCPROJ_USER_IN_FILE Vcproj.user.in)
 Find_Cmake_Configure_File (CMAKE_VARIABLES_XML_IN_FILE CmakeVariables.xml.in)
+Find_Cmake_Configure_File (CMAKE_VARIABLES_YML_IN_FILE CmakeVariables.yml.in)
 Find_Cmake_Configure_File (CMAKE_GVIM_INIT_TMPL_FILE gviminit.vim.tmpl)
 
 Find_File_In_Dir (CMAKE_CONFIG_FILE Config.cmake ${CMAKE_MODULE_PATH})
@@ -77,3 +79,4 @@ If (USE_QT)
 EndIf (USE_QT)
 
 Configure_File (${CMAKE_VARIABLES_XML_IN_FILE} ${CMAKE_VARIABLES_XML_OUT_FILE})
+Configure_File (${CMAKE_VARIABLES_YML_IN_FILE} ${CMAKE_VARIABLES_YML_OUT_FILE})

@@ -1,0 +1,42 @@
+exe:
+  perl: @PERL_EXECUTABLE@
+  python: @PYTHON_EXECUTABLE@
+  git: @GIT_EXECUTABLE@
+
+use:
+  boost: @USE_BOOST@
+  qt: @USE_QT@
+  poco: @USE_POCO@
+
+file:
+  in:
+    gvim: @CMAKE_GVIM_INIT_TMPL_FILE@
+    cmakevar: @CMAKE_VARIABLES_YML_IN_FILE@
+  out:
+    gvim: @CMAKE_GVIM_INIT_FILE_OUT@
+    cmakevar: @CMAKE_VARIABLES_YML_OUT_FILE@
+
+debug:
+  inst_prefix: @INSTALL_PREFIX_Debug@
+  output_dir:
+    runtime: @CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG@
+    archive: @CMAKE_ARCHIVE_OUTPUT_DIRECTORY_DEBUG@
+    library: @CMAKE_LIBRARY_OUTPUT_DIRECTORY_DEBUG@
+
+release:
+  inst_prefix: @INSTALL_PREFIX_Release@
+  output_dir:
+    runtime: @CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE@
+    archive: @CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE@
+    library: @CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE@
+
+cmake:
+  source_dir: @CMAKE_SOURCE_DIR@
+  binary_dir: @CMAKE_BINARY_DIR@
+  parent_list_file: @CMAKE_PARENT_LIST_FILE@
+  config_file: @CMAKE_CONFIG_FILE@
+  build_type: @CMAKE_BUILD_TYPE@
+
+dir:
+  boost_lib: @Boost_LIBRARY_DIRS@
+  qt_bin: @QT_BIN_DIR@
