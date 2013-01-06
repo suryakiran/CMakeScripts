@@ -48,3 +48,7 @@ Function (FIND_PYTHON_FILE)
 EndFunction (FIND_PYTHON_FILE)
 
 Find_Python_File(PY_COMMANDS_FILE Commands.py)
+Find_Python_File(PY_WRITE_EMACS_FILE WriteEmacsInit.py)
+Find_Python_File(PY_WRITE_GVIM_FILE WriteGvimInit.py)
+Find_Python_File(PY_TEST_FILE Test.py)
+Find_Python_File(PY_WRITE_EDITOR_FILE WriteEditorFiles.py)

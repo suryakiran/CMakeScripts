@@ -1,0 +1,22 @@
+{% spaceless %}
+(defvar server/{{ misc.emacs_server }}/var)
+(setplist 'server/{{ misc.emacs_server }}/var 
+          '(
+            master-conf-file "{{ cmake.parent_list_file }}"
+            source-dir "{{ cmake.source_dir }}"
+            binary-dir "{{ cmake.binary_dir }}"
+            config-file "{{ cmake.config_file }}"
+            yml-in-file "{{ file.in.cmakevar }}"
+            yml-out-file "{{ file.out.cmakevar }}"
+            emacs-in-file "{{ file.in.emacs }}"
+            emacs-out-file "{{ file.out.emacs }}"
+            ))
+                                            
+(put 
+ 'server/{{ misc.emacs_server }}/var 
+ 'search-dirs 
+ '({% for item in editor_search_dirs %}
+      "{{ item }}" {% endfor %}
+      ))
+
+{% endspaceless %}

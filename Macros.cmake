@@ -300,12 +300,12 @@ Macro (FIND_FILE_IN_DIR p_varName p_fileName p_dirName)
     EndIf (${p_varName})
 EndMacro (FIND_FILE_IN_DIR)
 
-Macro (CMAKE_LIST_TO_PERL_ARGS p_out p_flag)
+Macro (CMAKE_LIST_TO_ARGS p_out p_flag)
   ForEach (arg ${ARGN})
     List(APPEND ${p_out} ${p_flag})
     List(APPEND ${p_out} ${arg})
   EndForEach (arg)
-EndMacro (CMAKE_LIST_TO_PERL_ARGS)
+EndMacro (CMAKE_LIST_TO_ARGS)
 
 Macro (FIND_LIBRARIES p_name)
   Parse_Arguments(FIND_LIB

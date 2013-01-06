@@ -1,38 +1,37 @@
-chdir $CMAKE_SOURCE_DIR
+{% spaceless %}
+chdir {{ cmake.source_dir }}
 
 set path=.
-set path+=$CMAKE_SOURCE_DIR
-[%- FOREACH item IN GVIM_SEARCH_DIRS %]
-set path+=[% item %]
-[%- END %]
-
-[% IF os != 'Win32' -%]
+set path+={{ cmake.source_dir }}
+{% for item in editor_search_dirs %}set path+={{ item }}
+{% endfor %}
+{% ifequal os.name 'posix' %}
 set path+=/usr/include
-[%- END %]
+{% endifequal %} 
 
 function! OpenAlternateFile()
   python << end_of_python
 import os, sys, vim, re
 curFile = vim.current.buffer.name
 altFile = None
-[% FOREACH item IN PROJECT_MODULES %]
+{% for item in project_modules %}
 if altFile is None:
-  [% item %]_src_re = re.compile('$CMAKE_SOURCE_DIR/[% item %]/Src/([^\.]*)\.cxx$')
-  [% item %]_inc_re = re.compile('$CMAKE_SOURCE_DIR/[% item %]/Include/[% item %]/([^\.]*)\.hxx$')
+  {{ item }}_src_re = re.compile('{{ cmake.source_dir }}/{{ item }}/Src/([^\.]*)\.cxx$')
+  {{ item }}_inc_re = re.compile('{{ cmake.source_dir }}/{{ item }}/Include/{{ item }}/([^\.]*)\.hxx$')
   
-  if ([% item %]_src_re.match(curFile)):
-    altFile = [% item %]_src_re.sub('$CMAKE_SOURCE_DIR/[% item %]/Include/[% item %]/\\1.hxx', curFile)
-  elif ([% item %]_inc_re.match(curFile)):
-    altFile = [% item %]_inc_re.sub('$CMAKE_SOURCE_DIR/[% item %]/Src/\\1.cxx', curFile)
-[% END %]
+  if ({{ item }}_src_re.match(curFile)):
+    altFile = {{ item }}_src_re.sub('{{ cmake.source_dir }}/{{ item }}/Include/{{ item }}/\\1.hxx', curFile)
+  elif ({{ item }}_inc_re.match(curFile)):
+    altFile = {{ item }}_inc_re.sub('{{ cmake.source_dir }}/{{ item }}/Src/\\1.cxx', curFile)
+{% endfor %}
 if altFile is None:
-  s_re = re.compile ('$CMAKE_SOURCE_DIR/Src/([^\.]*)\.cxx$')
-  i_re = re.compile ('$CMAKE_SOURCE_DIR/Include/([^\.]*)\.hxx$')
+  s_re = re.compile ('{{ cmake.source_dir }}/Src/([^\.]*)\.cxx$')
+  i_re = re.compile ('{{ cmake.source_dir }}/Include/([^\.]*)\.hxx$')
 
   if s_re.match(curFile):
-    altFile = s_re.sub('$CMAKE_SOURCE_DIR/Include/\\1.hxx', curFile)
+    altFile = s_re.sub('{{ cmake.source_dir }}/Include/\\1.hxx', curFile)
   elif i_re.match(curFile):
-    altFile = i_re.sub('$CMAKE_SOURCE_DIR/Src/\\1.cxx', curFile)
+    altFile = i_re.sub('{{ cmake.source_dir }}/Src/\\1.cxx', curFile)
 
 if altFile is not None:
   vim.command('call OpenFile("%s")' % altFile)
@@ -42,14 +41,13 @@ endfunction "OpenAlternateFile()
 
 nmap <silent> <C-A> :call OpenAlternateFile()<CR>
 nmap <silent> ,a :call OpenAlternateConfigFile()<CR>
-nmap <silent> ,m :call OpenFile('$CMAKE_PARENT_LIST_FILE')<CR>
-nmap <silent> ]c :call OpenFile('$CMAKE_CONFIG_FILE')<CR>
-nmap <silent> ]v :call OpenFile('$CMAKE_VARIABLES_XML_IN_FILE')<CR>
-nmap <silent> [v :call OpenFile('$CMAKE_VARIABLES_XML_OUT_FILE')<CR>
-nmap <silent> [i :call OpenFile('$CMAKE_GVIM_INIT_FILE_OUT')<CR>
-nmap <silent> ]i :call OpenFile('$CMAKE_GVIM_INIT_TMPL_FILE')<CR>
-[% IF PROJECT_LIST_FILE -%]
-nmap <silent> ]p :call OpenFile('$PROJECT_LIST_FILE')<CR>
-[%- END %]
-nmap [b :e $CMAKE_BINARY_DIR/
-nmap [s :e $CMAKE_SOURCE_DIR/
+nmap <silent> ,m :call OpenFile('{{ cmake.parent_list_file }}')<CR>
+nmap <silent> ]c :call OpenFile('{{ cmake.config_file }}')<CR>
+nmap <silent> ]v :call OpenFile('{{ file.in.cmakevar }}')<CR>
+nmap <silent> [v :call OpenFile('{{ file.out.cmakevar }}')<CR>
+nmap <silent> [i :call OpenFile('{{ file.out.gvim }}')<CR>
+nmap <silent> ]i :call OpenFile('{{ file.in.gvim }}')<CR>
+nmap [b :e {{ cmake.binary_dir }}/
+nmap [s :e {{ cmake.source_dir }}/
+
+{% endspaceless %}

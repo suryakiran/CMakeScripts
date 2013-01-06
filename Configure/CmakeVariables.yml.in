@@ -12,9 +12,11 @@ file:
   in:
     gvim: @CMAKE_GVIM_INIT_TMPL_FILE@
     cmakevar: @CMAKE_VARIABLES_YML_IN_FILE@
+    emacs: @CMAKE_EMACS_INIT_IN_FILE@
   out:
     gvim: @CMAKE_GVIM_INIT_FILE_OUT@
     cmakevar: @CMAKE_VARIABLES_YML_OUT_FILE@
+    emacs: @CMAKE_EMACS_INIT_OUT_FILE@
 
 debug:
   inst_prefix: @INSTALL_PREFIX_Debug@
@@ -31,11 +33,16 @@ release:
     library: @CMAKE_LIBRARY_OUTPUT_DIRECTORY_RELEASE@
 
 cmake:
-  source_dir: @CMAKE_SOURCE_DIR@
-  binary_dir: @CMAKE_BINARY_DIR@
-  parent_list_file: @CMAKE_PARENT_LIST_FILE@
+  master-file: &mfile @CMAKE_PARENT_LIST_FILE@
+  source-dir: &sdir @CMAKE_SOURCE_DIR@
+  source_dir: *sdir
+  binary-dir: &bdir @CMAKE_BINARY_DIR@
+  binary_dir: *bdir
+  parent_list_file: *mfile
+  master_file: *mfile
   config_file: @CMAKE_CONFIG_FILE@
   build_type: @CMAKE_BUILD_TYPE@
+  configure_dir: @CMAKE_CONFIG_DIR@
 
 dir:
   boost_lib: @Boost_LIBRARY_DIRS@
@@ -43,3 +50,4 @@ dir:
 
 misc:
   git_branch: @GIT_CURRENT_BRANCH_NAME@
+  emacs_server: @EMACS_SERVER_NAME@
