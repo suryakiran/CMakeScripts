@@ -1,4 +1,6 @@
 {% spaceless %}
+(make-variable-buffer-local '{{ misc.emacs_server|lower }})
+(setq-default {{ misc.emacs_server|lower }} nil)
 (defvar server/{{ misc.emacs_server }}/var)
 (setplist 'server/{{ misc.emacs_server }}/var 
           '(
@@ -18,5 +20,13 @@
  '({% for item in editor_search_dirs %}
       "{{ item }}" {% endfor %}
       ))
+
+(dir-locals-set-class-variables '{{ misc.emacs_server|lower }}
+                                '(
+                                  (nil . (({{ misc.emacs_server|lower }} . t)))
+                                  ))
+
+(dir-locals-set-directory-class "{{ cmake.source_dir }}" '{{ misc.emacs_server|lower }})
+(dir-locals-set-directory-class "{{ cmake.binary_dir }}" '{{ misc.emacs_server|lower }})
 
 {% endspaceless %}
