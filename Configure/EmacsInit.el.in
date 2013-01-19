@@ -1,4 +1,5 @@
 {% spaceless %}
+(provide 'project/emacs-custom-init)
 (make-variable-buffer-local '{{ misc.emacs_server|lower }})
 (setq-default {{ misc.emacs_server|lower }} nil)
 (defvar server/{{ misc.emacs_server }}/var)
@@ -28,5 +29,14 @@
 
 (dir-locals-set-directory-class "{{ cmake.source_dir }}" '{{ misc.emacs_server|lower }})
 (dir-locals-set-directory-class "{{ cmake.binary_dir }}" '{{ misc.emacs_server|lower }})
+
+(global-set-key (kbd "C-, s") (lambda () (interactive) (project/open-dir 'source-dir)))
+(global-set-key (kbd "C-, b") (lambda () (interactive) (project/open-dir 'binary-dir)))
+(global-set-key (kbd "C-, m") (lambda () (interactive) (project/open-file 'master-conf-file)))
+(global-set-key (kbd "C-, c") (lambda () (interactive) (project/open-file 'config-file)))
+(global-set-key (kbd "C-, y") (lambda () (interactive) (project/open-file 'yml-in-file)))
+(global-set-key (kbd "C-, Y") (lambda () (interactive) (project/open-file 'yml-out-file)))
+(global-set-key (kbd "C-, e") (lambda () (interactive) (project/open-file 'emacs-in-file)))
+(global-set-key (kbd "C-, E") (lambda () (interactive) (project/open-file 'emacs-out-file)))
 
 {% endspaceless %}
