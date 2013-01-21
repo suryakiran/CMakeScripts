@@ -1,4 +1,6 @@
 Include (FindPythonInterp)
+Include (FindPythonLibs)
+Include_Directories (${PYTHON_INCLUDE_DIR})
 
 If (NOT PYTHON_EXECUTABLE)
   Message (FATAL_ERROR "Unable to find Python. Please install Python and retry")

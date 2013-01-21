@@ -21,6 +21,8 @@ Set (CMAKE_EMACS_INIT_OUT_FILE ${CMAKE_BINARY_DIR}/EmacsInit.el)
 
 Include_Cmake_Module(Macros)
 Include_Cmake_Module(CustomPCH)
+Include_Cmake_Module(Perl)
+Include_Cmake_Module(Python)
 
 OPTION (CXX_11 "Use Cxx11 Features" FALSE)
 Include_Cmake_Module(Compiler)
