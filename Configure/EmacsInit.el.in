@@ -45,4 +45,9 @@
 (global-set-key (kbd "C-, s") (lambda () (interactive) (project/open-dir 'source-dir)))
 (global-set-key (kbd "C-, b") (lambda () (interactive) (project/open-dir 'binary-dir)))
 
+(defalias 'git (lambda () (interactive) (magit-status "{{ cmake.source_dir }}")))
+(defalias 'git-cmake (lambda () (interactive) (magit-status "{{ cmake.cmake_dir }}")))
+(defalias 'git-perl (lambda () (interactive) (magit-status "{{ cmake.perl_dir }}")))
+(defalias 'git-py (lambda () (interactive) (magit-status "{{ cmake.python_dir }}")))
+
 {% endspaceless %}
