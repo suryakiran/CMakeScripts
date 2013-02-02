@@ -4,8 +4,8 @@
 (make-variable-buffer-local '{{ misc.emacs_server|lower }})
 (setq-default {{ misc.emacs_server|lower }} nil)
 
-(defvar server/{{ misc.emacs_server }}/var)
-(setplist 'server/{{ misc.emacs_server }}/var 
+(defvar server/{{ misc.emacs_server|upper }}/var)
+(setplist 'server/{{ misc.emacs_server|upper }}/var 
           '(
             master-conf-file "{{ cmake.parent_list_file }}"
             source-dir "{{ cmake.source_dir }}"
@@ -18,7 +18,7 @@
             ))
                                             
 (put 
- 'server/{{ misc.emacs_server }}/var 
+ 'server/{{ misc.emacs_server|upper }}/var 
  'search-dirs 
  '({% for item in editor_search_dirs %}
       "{{ item }}" {% endfor %}
