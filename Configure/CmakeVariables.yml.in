@@ -43,6 +43,9 @@ cmake:
   config_file: @CMAKE_CONFIG_FILE@
   build_type: @CMAKE_BUILD_TYPE@
   configure_dir: @CMAKE_CONFIG_DIR@
+  cmake_dir: @CMAKE_SOURCE_DIR@/CMake
+  perl_dir: @CMAKE_SOURCE_DIR@/PerlModules
+  python_dir: @CMAKE_SOURCE_DIR@/PythonModules
 
 dir:
   boost_lib: @Boost_LIBRARY_DIRS@
