@@ -318,11 +318,11 @@ Macro (FIND_LIBRARIES p_name)
 
   Set (lib_search_path)
 
-  Execute_Perl (
-    FILE ${PL_FILE_CASE_CONV}
-    ARGS -t camel_case -i ${p_name} 
-    OUTPUT output_file_name
-    )
+  #Execute_Perl (
+  #  FILE ${PL_FILE_CASE_CONV}
+  #  ARGS -t camel_case -i ${p_name} 
+  #  OUTPUT output_file_name
+  #  )
 
   Set (${p_name}_SEARCH_PATHS)
 
@@ -439,11 +439,11 @@ Macro (FIND_LIBRARIES p_name)
       EndForEach (l)
     EndIf (${search_paths})
 
-    Execute_Perl (
-      FILE ${PL_FILE_LIBRARY_NAMES}
-      CMAKE_OUTPUT ${CMAKE_BINARY_DIR}/${output_file_name}.cmake
-      ARGS -p ${p_name}
-      )
+#    Execute_Perl (
+#      FILE ${PL_FILE_LIBRARY_NAMES}
+#      CMAKE_OUTPUT ${CMAKE_BINARY_DIR}/${output_file_name}.cmake
+#      ARGS -p ${p_name}
+#      )
   Endif (FIND_LIB_LIBRARIES)
 
   Mark_As_Advanced (
