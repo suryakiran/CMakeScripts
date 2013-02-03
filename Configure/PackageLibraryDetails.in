@@ -1,0 +1,24 @@
+If({{ lib.debug.name }} AND {{ lib.release.name }})
+  Set ({{ lib.name }}
+    optimized {{ lib.release.value }}
+    debug {{ lib.debug.value }}
+    CACHE STRING "{{ lib.prefix }} Libraries"
+    )
+ElseIf({{ lib.debug.name }})
+  Set ({{ lib.name }} {{ lib.debug.value }}
+    CACHE STRING "{{ lib.prefix }} Libraries"
+    )
+ElseIf({{ lib.release.name }})
+  Set ({{ lib.name }} {{ lib.release.value }}
+    CACHE STRING "{{ lib.prefix }} Libraries"
+    )
+EndIf({{ lib.debug.name }} AND {{ lib.release.name }})
+
+Set ({{ lib.prefix }}_Debug_LIBRARY {{ lib.debug.value }})
+Set ({{ lib.prefix }}_Release_LIBRARY {{ lib.release.value }})
+
+Mark_As_Advanced (
+  {{ lib.debug.name }}
+  {{ lib.release.name }}
+  {{ lib.name }}
+)
