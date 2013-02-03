@@ -1,7 +1,16 @@
 import os, types, sys
 import argparse
+import re
 
 class Commands:
+    def to_camel_case(self, *args, **kwargs):
+        for a in args:
+            print ''.join(map(lambda i: i.title(), a.split('_')))
+
+    def split_string_on_upper_case(self, *args, **kwargs):
+        l = re.findall('[A-Z][^A-Z]*', args[0])
+        print '-'.join(map(lambda i: i.lower(), l))
+    
     def make_executable(self, *args, **kwargs):
         f = args[0]
         if os.access(f, os.R_OK):

@@ -68,6 +68,7 @@ Find_Cmake_Configure_File (CMAKE_VARIABLES_XML_IN_FILE CmakeVariables.xml.in)
 Find_Cmake_Configure_File (CMAKE_VARIABLES_YML_IN_FILE CmakeVariables.yml.in)
 Find_Cmake_Configure_File (CMAKE_GVIM_INIT_TMPL_FILE gviminit.vim.tmpl)
 Find_Cmake_Configure_File (CMAKE_EMACS_INIT_IN_FILE EmacsInit.el.in)
+Find_Cmake_Configure_File (CMAKE_PACKAGE_LIBRARY_DETAILS_IN_FILE PackageLibraryDetails.in)
 
 Find_File_In_Dir (CMAKE_CONFIG_FILE Config.cmake ${CMAKE_MODULE_PATH})
 
