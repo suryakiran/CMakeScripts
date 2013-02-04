@@ -54,3 +54,10 @@ dir:
 misc:
   git_branch: @GIT_CURRENT_BRANCH_NAME@
   emacs_server: @EMACS_SERVER_NAME@
+
+lib:
+  debug:
+    yaml: @YAML_CPP_DEBUG_LIBRARY@
+  
+  release:
+    yaml: @YAML_CPP_OPTIMIZED_LIBRARY@
