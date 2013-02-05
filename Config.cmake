@@ -83,5 +83,4 @@ If (USE_QT)
   Include (${CMAKE_MODULE_PATH}/Qt.cmake)
 EndIf (USE_QT)
 
-Configure_File (${CMAKE_VARIABLES_XML_IN_FILE} ${CMAKE_VARIABLES_XML_OUT_FILE})
-Configure_File (${CMAKE_VARIABLES_YML_IN_FILE} ${CMAKE_VARIABLES_YML_OUT_FILE})
+Write_Variables_Yml_File()
