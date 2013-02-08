@@ -2,6 +2,8 @@ exe:
   perl: @PERL_EXECUTABLE@
   python: @PYTHON_EXECUTABLE@
   git: @GIT_EXECUTABLE@
+  gtags: @GTAGS_EXECUTABLE@
+  global: @GLOBAL_EXECUTABLE@
 
 use:
   boost: @USE_BOOST@

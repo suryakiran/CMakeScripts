@@ -1,6 +1,9 @@
 {% spaceless %}
 (provide 'project/emacs-custom-init)
 
+(setenv "GTAGSROOT" "/")
+(setenv "GTAGSDBPATH" "{{ cmake.binary_dir }}")
+
 (make-variable-buffer-local '{{ misc.emacs_server|lower }})
 (setq-default {{ misc.emacs_server|lower }} nil)
 

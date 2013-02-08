@@ -24,6 +24,9 @@ Include_Cmake_Module(CustomPCH)
 Include_Cmake_Module(Perl)
 Include_Cmake_Module(Python)
 
+Find_Program (GTAGS_EXECUTABLE gtags)
+Find_Program (GLOBAL_EXECUTABLE global)
+
 OPTION (CXX_11 "Use Cxx11 Features" FALSE)
 Include_Cmake_Module(Compiler)
 
