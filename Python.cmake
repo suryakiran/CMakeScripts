@@ -6,7 +6,7 @@ If (NOT PYTHON_EXECUTABLE)
   Message (FATAL_ERROR "Unable to find Python. Please install Python and retry")
 EndIf (NOT PYTHON_EXECUTABLE)
 
-Function (EXECUTE_PYTHON)
+Macro (EXECUTE_PYTHON)
   PARSE_ARGUMENTS (EXECUTE_PYTHON
     "FILE;ARGS;CMAKE_OUTPUT;OUTPUT" "" ${ARGN})
   If (EXECUTE_PYTHON_FILE)
@@ -38,7 +38,7 @@ Function (EXECUTE_PYTHON)
     EndIf (EXECUTE_PYTHON_RESULT_VARIABLE)
 
   EndIf (EXECUTE_PYTHON_FILE)
-EndFunction (EXECUTE_PYTHON)
+EndMacro (EXECUTE_PYTHON)
 
 Function (CONFIGURE_EXECUTABLE_FILE p_from p_to)
   Configure_File(${p_from} ${p_to} ${ARGN})
@@ -55,3 +55,4 @@ Find_Python_File(PY_WRITE_GVIM_FILE WriteGvimInit.py)
 Find_Python_File(PY_TEST_FILE Test.py)
 Find_Python_File(PY_WRITE_EDITOR_FILE WriteEditorFiles.py)
 Find_Python_File(PY_FILE_PACKAGE_LIBRARY_DETAILS WritePackageLibraryDetails.py)
+Find_Python_File(PY_FILE_GET_PROPERTIES WriteGetPropertiesFile.py)
