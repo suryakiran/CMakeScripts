@@ -416,7 +416,7 @@ Macro (FIND_LIBRARIES p_name)
       ForEach (l ${FIND_LIB_LIBRARIES})
         Find_Library (
           ${p_name}_DEBUG_LIBRARY 
-          NAMES ${l}d ${l}
+          NAMES ${l}d ${l}_debug ${l}
           PATHS ${lib_search_path} ${${p_name}_SEARCH_PATHS}
           PATH_SUFFIXES lib-debug lib
           NO_DEFAULT_PATH
@@ -432,7 +432,7 @@ Macro (FIND_LIBRARIES p_name)
       ForEach (l ${FIND_LIB_LIBRARIES})
         Find_Library (
           ${p_name}_DEBUG_LIBRARY 
-          NAMES ${l}d ${l}
+          NAMES ${l}d ${l}_debug ${l}
           PATHS ${lib_search_path}
           PATH_SUFFIXES lib-debug lib
           )

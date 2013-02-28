@@ -59,7 +59,7 @@ misc:
 
 lib:
   debug:
-    yaml: @YAML_CPP_DEBUG_LIBRARY@
+    tbb: @INTEL_TBB_DEBUG_LIBRARY@
   
   release:
-    yaml: @YAML_CPP_OPTIMIZED_LIBRARY@
+    tbb: @INTEL_TBB_OPTIMIZED_LIBRARY@

@@ -30,6 +30,7 @@ Include_Cmake_Module(Compiler)
 OPTION (USE_BOOST "Use Boost Libraries" TRUE)
 OPTION (USE_POCO "Use Poco Libraries" FALSE)
 OPTION (USE_QT "Use Qt Libraries" FALSE)
+OPTION (USE_TBB "Use Intel Thread Building Blocks Libraries" TRUE)
 
 Set(Boost_ADDITIONAL_VERSIONS 
   1.60.1 1.60
@@ -52,6 +53,10 @@ If (USE_BOOST)
      regex
     )
 EndIf (USE_BOOST)
+
+If (USE_TBB)
+  Find_Package(IntelTBB)
+EndIf (USE_TBB)
 
 If (CXX_11)
   Include_Cmake_Module(C++-11)
