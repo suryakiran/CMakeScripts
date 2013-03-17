@@ -48,6 +48,7 @@ cmake:
   cmake_dir: @CMAKE_SOURCE_DIR@/CMake
   perl_dir: @CMAKE_SOURCE_DIR@/PerlModules
   python_dir: @CMAKE_SOURCE_DIR@/PythonModules
+  global_dir: @CMAKE_SOURCE_DIR@/Global
 
 dir:
   boost_lib: @Boost_LIBRARY_DIRS@
