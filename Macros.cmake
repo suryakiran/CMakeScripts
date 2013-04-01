@@ -287,19 +287,6 @@ Macro (GET_LIB_DIRS p_prefix)
 
 EndMacro (GET_LIB_DIRS)
 
-Macro (FIND_FILE_IN_DIR p_varName p_fileName p_dirName)
-  Find_File (
-    ${p_varName}
-      ${p_fileName}
-    PATHS
-      ${p_dirName}
-      )
-
-    If (${p_varName})
-      Mark_As_Advanced (${p_varName})
-    EndIf (${p_varName})
-EndMacro (FIND_FILE_IN_DIR)
-
 Macro (CMAKE_LIST_TO_ARGS p_out p_flag)
   ForEach (arg ${ARGN})
     List(APPEND ${p_out} ${p_flag})
