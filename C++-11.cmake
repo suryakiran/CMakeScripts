@@ -30,6 +30,7 @@ If (CMAKE_COMPILER_IS_GNUCXX AND CXX11_SUPPORT_FLAG)
   Check_Cxx11_Feature(NAME "shared_ptr" FILE TestSharedPtr VAR CXX11_FEATURE_SHARED_PTR)
   Check_Cxx11_Feature(NAME "unique_ptr" FILE TestUniquePtr VAR CXX11_FEATURE_UNIQUE_PTR)
   Check_Cxx11_Feature(NAME "Fixed size array" FILE TestArray VAR CXX11_FEATURE_ARRAY)
+  Check_Cxx11_Feature(NAME "Range Based For Loop" FILE TestRangeFor VAR CXX11_FEATURE_RANGE_BASED_FOR_LOOP)
   
   Check_Cxx11_Feature(
     NAME "Non-static data member initializers"  
