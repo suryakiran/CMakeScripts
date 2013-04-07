@@ -17,8 +17,34 @@ Set (CMAKE_GVIM_INIT_FILE_OUT ${CMAKE_BINARY_DIR}/gviminit.vim)
 Set (CMAKE_VARIABLES_YML_OUT_FILE ${CMAKE_BINARY_DIR}/CMakeVariables.yml)
 Set (CMAKE_EMACS_INIT_OUT_FILE ${CMAKE_BINARY_DIR}/EmacsInit.el)
 
+Macro (FIND_FILE_IN_DIR p_varName p_fileName p_dirName)
+  Find_File (
+    ${p_varName}
+      ${p_fileName}
+    PATHS
+      ${p_dirName}
+      )
+
+    If (${p_varName})
+      Mark_As_Advanced (${p_varName})
+    EndIf (${p_varName})
+EndMacro (FIND_FILE_IN_DIR)
+
+Macro (FIND_CMAKE_CONFIGURE_FILE)
+  Find_File_In_Dir (${ARGN} ${CMAKE_CONFIG_DIR})
+EndMacro (FIND_CMAKE_CONFIGURE_FILE)
+
+Find_File_In_Dir (CMAKE_CONFIG_FILE Config.cmake ${CMAKE_MODULE_PATH})
+Find_Cmake_Configure_File (CMAKE_DLL_H_IN_FILE Dll.h.in)
+Find_Cmake_Configure_File (CMAKE_VCPROJ_USER_IN_FILE Vcproj.user.in)
+Find_Cmake_Configure_File (CMAKE_VARIABLES_YML_IN_FILE CmakeVariables.yml.in)
+Find_Cmake_Configure_File (CMAKE_GVIM_INIT_TMPL_FILE gviminit.vim.tmpl)
+Find_Cmake_Configure_File (CMAKE_EMACS_INIT_IN_FILE EmacsInit.el.in)
+Find_Cmake_Configure_File (CMAKE_PACKAGE_LIBRARY_DETAILS_IN_FILE PackageLibraryDetails.in)
+
 Include_Cmake_Module(Macros)
-Include_Cmake_Module(CustomPCH)
+
+# Include_Cmake_Module(CustomPCH)
 Include_Cmake_Module(Python)
 
 Find_Program (GTAGS_EXECUTABLE gtags)
@@ -62,24 +88,12 @@ If (CXX_11)
   Include_Cmake_Module(C++-11)
 EndIf (CXX_11)
 
-Macro (FIND_CMAKE_CONFIGURE_FILE)
-  Find_File_In_Dir (${ARGN} ${CMAKE_CONFIG_DIR})
-EndMacro (FIND_CMAKE_CONFIGURE_FILE)
-
-Find_Cmake_Configure_File (CMAKE_DLL_H_IN_FILE Dll.h.in)
-Find_Cmake_Configure_File (CMAKE_VCPROJ_USER_IN_FILE Vcproj.user.in)
-Find_Cmake_Configure_File (CMAKE_VARIABLES_YML_IN_FILE CmakeVariables.yml.in)
-Find_Cmake_Configure_File (CMAKE_GVIM_INIT_TMPL_FILE gviminit.vim.tmpl)
-Find_Cmake_Configure_File (CMAKE_EMACS_INIT_IN_FILE EmacsInit.el.in)
-Find_Cmake_Configure_File (CMAKE_PACKAGE_LIBRARY_DETAILS_IN_FILE PackageLibraryDetails.in)
-
-Find_File_In_Dir (CMAKE_CONFIG_FILE Config.cmake ${CMAKE_MODULE_PATH})
-
 Include_Cmake_Module(Git)
 Include_Cmake_Module(Definitions)
 Include_Cmake_Module(BuildDirectories)
 
 If (USE_QT)
+  # Find_Package (Qt5Widgets)
   Find_Package (Qt4 COMPONENTS QtCore QtGui)
   Get_Filename_Component (QT_BIN_DIR ${QT_QMAKE_EXECUTABLE} PATH CACHE)
   Include (${QT_USE_FILE})
