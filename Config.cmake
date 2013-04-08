@@ -100,4 +100,8 @@ If (USE_QT)
   Include (${CMAKE_MODULE_PATH}/Qt.cmake)
 EndIf (USE_QT)
 
+If(USE_POCO)
+  Include_Cmake_Module(PocoConfig)
+EndIf(USE_POCO)
+
 Write_Variables_Yml_File()

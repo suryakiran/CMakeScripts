@@ -53,6 +53,7 @@ cmake:
 dir:
   boost_lib: @Boost_LIBRARY_DIRS@
   qt_bin: @QT_BIN_DIR@
+  poco_include: @Poco_INCLUDE_DIR@
 
 misc:
   git_branch: @GIT_CURRENT_BRANCH_NAME@
