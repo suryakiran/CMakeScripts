@@ -76,7 +76,7 @@ Set(Boost_ADDITIONAL_VERSIONS
 If (USE_BOOST)
   Find_Package(Boost $ENV{BOOST_VERSION}
     COMPONENTS date_time program_options filesystem system thread signals wave
-     regex locale
+     regex locale iostreams
     )
 EndIf (USE_BOOST)
 
