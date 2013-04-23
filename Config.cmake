@@ -102,6 +102,7 @@ EndIf (USE_QT)
 
 If(USE_POCO)
   Include_Cmake_Module(PocoConfig)
+  Include_Directories (${Poco_INCLUDE_DIR})
 EndIf(USE_POCO)
 
 Write_Variables_Yml_File()
