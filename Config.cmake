@@ -58,20 +58,20 @@ OPTION (USE_POCO "Use Poco Libraries" FALSE)
 OPTION (USE_QT "Use Qt Libraries" FALSE)
 OPTION (USE_TBB "Use Intel Thread Building Blocks Libraries" TRUE)
 
-Set(Boost_ADDITIONAL_VERSIONS 
-  1.60.1 1.60
-  1.59.1 1.59
-  1.58.1 1.58
-  1.57.1 1.57
-  1.56.1 1.56
-  1.55.1 1.55
-  1.54.1 1.54
-  1.53.1 1.53
-  1.52.1 1.52
-  1.51.1 1.51
-  1.50.1 1.50
-  1.46.1
-  )
+# Set(Boost_ADDITIONAL_VERSIONS 
+#   1.60.1 1.60
+#   1.59.1 1.59
+#   1.58.1 1.58
+#   1.57.1 1.57
+#   1.56.1 1.56
+#   1.55.1 1.55
+#   1.54.1 1.54 1.54.0
+#   1.53.1 1.53
+#   1.52.1 1.52
+#   1.51.1 1.51
+#   1.50.1 1.50
+#   1.46.1
+#   )
 
 If (USE_BOOST)
   Find_Package(Boost $ENV{BOOST_VERSION}
