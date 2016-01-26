@@ -1,6 +1,7 @@
 import os, sys
 import argparse
 import yaml
+import django
 from django.template import loader
 from django.conf import settings
 
@@ -29,6 +30,8 @@ yml = yaml.load(open(args.yml_file, 'r'))
 settings.configure (
     TEMPLATE_DIRS = [yml['cmake']['configure_dir']]
     )
+
+django.setup()
 
 f = open(args.output, 'w')
 f.write(loader.render_to_string(args.input, d))

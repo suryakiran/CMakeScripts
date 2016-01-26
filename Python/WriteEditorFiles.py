@@ -1,3 +1,4 @@
+import django
 from django.template import loader
 from django.conf import settings
 import yaml, os
@@ -23,6 +24,8 @@ template_files = {
 settings.configure (
     TEMPLATE_DIRS = [yml['cmake']['configure_dir']]
     )
+
+django.setup()
 
 for tf in template_files:
     f = open(template_files[tf], 'w')

@@ -17,6 +17,8 @@ Set (CMAKE_GVIM_INIT_FILE_OUT ${CMAKE_BINARY_DIR}/gviminit.vim)
 Set (CMAKE_VARIABLES_YML_OUT_FILE ${CMAKE_BINARY_DIR}/CMakeVariables.yml)
 Set (CMAKE_EMACS_INIT_OUT_FILE ${CMAKE_BINARY_DIR}/EmacsInit.el)
 
+Find_Package(Perl)
+
 Macro (FIND_FILE_IN_DIR p_varName p_fileName p_dirName)
   Find_File (
     ${p_varName}
@@ -58,25 +60,27 @@ OPTION (USE_POCO "Use Poco Libraries" FALSE)
 OPTION (USE_QT "Use Qt Libraries" FALSE)
 OPTION (USE_TBB "Use Intel Thread Building Blocks Libraries" TRUE)
 
-# Set(Boost_ADDITIONAL_VERSIONS 
-#   1.60.1 1.60
-#   1.59.1 1.59
-#   1.58.1 1.58
-#   1.57.1 1.57
-#   1.56.1 1.56
-#   1.55.1 1.55
-#   1.54.1 1.54 1.54.0
-#   1.53.1 1.53
-#   1.52.1 1.52
-#   1.51.1 1.51
-#   1.50.1 1.50
-#   1.46.1
-#   )
+Set(Boost_ADDITIONAL_VERSIONS 
+  1.60.1 1.60 1.60.0
+  1.59.1 1.59 1.59.0
+  1.58.1 1.58 1.58.0
+  1.57.1 1.57 
+  1.56.1 1.56
+  1.55.1 1.55
+  1.54.1 1.54 1.54.0
+  1.53.1 1.53
+  1.52.1 1.52
+  1.51.1 1.51
+  1.50.1 1.50
+  1.46.1
+  )
+
+Set (BOOST_ROOT $ENV{BOOST_ROOT})
 
 If (USE_BOOST)
   Find_Package(Boost $ENV{BOOST_VERSION}
     COMPONENTS date_time program_options filesystem system thread signals wave
-     regex locale iostreams
+    regex locale iostreams
     )
 EndIf (USE_BOOST)
 

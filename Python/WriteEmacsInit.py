@@ -1,3 +1,4 @@
+import django
 from django.template import loader
 from django.conf import settings
 import yaml, os
@@ -19,6 +20,7 @@ emacs_template_file = yml['file']['in']['emacs']
 settings.configure (
     TEMPLATE_DIRS = [os.path.dirname(emacs_template_file)]
     )
+django.setup()
 
 f = open(yml['file']['out']['emacs'], 'w')
 f.write(loader.render_to_string(os.path.basename(emacs_template_file), yml))
