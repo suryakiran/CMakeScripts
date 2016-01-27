@@ -22,14 +22,14 @@ Find_Package(Perl)
 Macro (FIND_FILE_IN_DIR p_varName p_fileName p_dirName)
   Find_File (
     ${p_varName}
-      ${p_fileName}
+    ${p_fileName}
     PATHS
-      ${p_dirName}
-      )
+    ${p_dirName}
+    )
 
-    If (${p_varName})
-      Mark_As_Advanced (${p_varName})
-    EndIf (${p_varName})
+  If (${p_varName})
+    Mark_As_Advanced (${p_varName})
+  EndIf (${p_varName})
 EndMacro (FIND_FILE_IN_DIR)
 
 Macro (FIND_CMAKE_CONFIGURE_FILE)
@@ -77,12 +77,10 @@ Set(Boost_ADDITIONAL_VERSIONS
 
 Set (BOOST_ROOT $ENV{BOOST_ROOT})
 
-If (USE_BOOST)
-  Find_Package(Boost $ENV{BOOST_VERSION}
-    COMPONENTS date_time program_options filesystem system thread signals wave
-    regex locale iostreams
-    )
-EndIf (USE_BOOST)
+Find_Package(Boost $ENV{BOOST_VERSION}
+  COMPONENTS date_time program_options filesystem system thread signals wave
+  regex locale iostreams
+  )
 
 If (USE_TBB)
   Find_Package(IntelTBB)
@@ -96,13 +94,9 @@ Include_Cmake_Module(Git)
 Include_Cmake_Module(Definitions)
 Include_Cmake_Module(BuildDirectories)
 
-If (USE_QT)
-  # Find_Package (Qt5Widgets)
-  Find_Package (Qt4 COMPONENTS QtCore QtGui)
-  Get_Filename_Component (QT_BIN_DIR ${QT_QMAKE_EXECUTABLE} PATH CACHE)
-  Include (${QT_USE_FILE})
-  Include (${CMAKE_MODULE_PATH}/Qt.cmake)
-EndIf (USE_QT)
+Find_Package (Qt5Widgets)
+Include_Directories (${Qt5Widgets_INCLUDE_DIRS})
+Set (CMAKE_INCLUDE_CURRENT_DIR ON)
 
 If(USE_POCO)
   Include_Cmake_Module(PocoConfig)
