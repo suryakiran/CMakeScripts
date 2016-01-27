@@ -86,9 +86,7 @@ If (USE_TBB)
   Find_Package(IntelTBB)
 EndIf (USE_TBB)
 
-If (CXX_11)
-  Include_Cmake_Module(C++-11)
-EndIf (CXX_11)
+Include_Cmake_Module(C++-11)
 
 Include_Cmake_Module(Git)
 Include_Cmake_Module(Definitions)
