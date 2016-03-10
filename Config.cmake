@@ -78,8 +78,8 @@ Set(Boost_ADDITIONAL_VERSIONS
 Set (BOOST_ROOT $ENV{BOOST_ROOT})
 
 Find_Package(Boost $ENV{BOOST_VERSION}
-  COMPONENTS date_time program_options filesystem system thread signals
-  regex locale iostreams python
+  COMPONENTS date_time program_options filesystem system signals
+  regex iostreams python #locale thread
   )
 
 If (USE_TBB)

@@ -8,7 +8,7 @@ EndIf (USE_POCO)
 
 If (UNIX)
 	Add_Definitions ("-DUNIX")
-  # Set (CMAKE_SKIP_BUILD_RPATH TRUE)
+  Set (CMAKE_SKIP_BUILD_RPATH TRUE)
 Else (UNIX)
   Set_Property (GLOBAL PROPERTY USE_FOLDERS TRUE)
   Add_Definitions ("-DWINDOWS")
